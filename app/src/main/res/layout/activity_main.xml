@@ -22,12 +22,51 @@
 
     <include layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal"
+        >
+
+        <ImageView
+            android:id="@+id/imageViewLeft"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@mipmap/ic_launcher" />
+        <ImageView
+            android:id="@+id/imageViewRight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@mipmap/ic_launcher" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="bottom|center_horizontal"
+            >
+            <android.support.design.widget.FloatingActionButton
+                android:tag="imageHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@android:drawable/ic_menu_camera"
+                android:onClick="takeCleanPhoto"
+                />
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/fab_margin"
+                android:onClick="takeDirtyPhoto"
+                android:tag="imageHolder"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
