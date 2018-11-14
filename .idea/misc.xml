@@ -30,7 +30,11 @@
     </option>
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+>>>>>>> parent of 8fba034... Revert "Change kotlin version in build.gradle"
 =======
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
 >>>>>>> parent of 8fba034... Revert "Change kotlin version in build.gradle"
