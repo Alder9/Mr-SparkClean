@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_picture"
+        android:title="Picture"/>
+
+    <item
+        android:id="@+id/navigation_clean"
+        android:title="Clean"/>
+
+    <item
+        android:id="@+id/navigation_retrieve"
+        android:title="Retrieve"/>
+
+</menu>
