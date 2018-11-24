@@ -14,10 +14,11 @@ import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.select_device_layout.*
+import kotlinx.android.synthetic.main.select_device_layout.*
 import org.jetbrains.anko.toast
 
-class MainActivity : AppCompatActivity() {
+class SelectDeviceActivity : AppCompatActivity() {
 
     private var m_bluetoothAdapter: BluetoothAdapter? = null
     private lateinit var m_pairedDevices: Set<BluetoothDevice>
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.select_device_layout)
 
         m_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if(m_bluetoothAdapter == null) {
