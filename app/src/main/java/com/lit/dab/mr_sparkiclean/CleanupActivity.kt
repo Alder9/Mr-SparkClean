@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
-import org.jetbrains.anko.startActivity
 
-class MainActivity : AppCompatActivity(){
+class CleanupActivity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when(item.itemId) {
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.cleanup_layout)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
