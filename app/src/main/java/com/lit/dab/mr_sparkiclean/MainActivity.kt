@@ -3,6 +3,7 @@ package com.lit.dab.mr_sparkiclean
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color.*
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -57,17 +58,34 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CLEAN -> {
                     val bitmapImg = data?.extras?.get("img") as Bitmap
                     val imageView = findViewById<ImageView>(R.id.imageViewLeft)
-                    //val pixels = IntArray(bitmapImg.height * bitmapImg.width)
-                    //bitmapImg.getPixels(pixels, 0, bitmapImg.getWidth(), 0, 0, bitmapImg.getWidth(), bitmapImg.getHeight())
+                    processPhoto("Basic", bitmapImg)
                     Log.d(" ", "Captured Photo clean!")
                     imageView.setImageBitmap(bitmapImg)
                 }
                 REQUEST_DIRTY -> {
                     val bitmapImg = data?.extras?.get("img") as Bitmap
                     val imageView = findViewById<ImageView>(R.id.imageViewRight)
+                    processPhoto("Basic", bitmapImg)
                     imageView.setImageBitmap(bitmapImg)
                 }
             }
+        }
+    }
+
+    private fun processPhoto (method: String, image: Bitmap) {
+        Log.d("Number of pixels: ", (image.height * image.width).toString())
+        val pixels = IntArray(image.height * image.width)
+        image.getPixels(pixels, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight())
+        for (pixel in pixels) {
+            Log.d("Pixel: ", pixel.toString())
+            val alpha = alpha(pixel)
+            val red = red(pixel)
+            val green = green(pixel)
+            val blue = blue(pixel)
+            Log.d("A: ", alpha.toString())
+            Log.d("R: ", red.toString())
+            Log.d("G: ", green.toString())
+            Log.d("B: ", blue.toString())
         }
     }
 

@@ -30,11 +30,11 @@
         >
 
         <ImageView
-            android:id="@+id/imageViewLeft"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:src="@mipmap/ic_launcher" />
+        android:id="@+id/imageViewLeft"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:src="@mipmap/ic_launcher" />
         <ImageView
             android:id="@+id/imageViewRight"
             android:layout_width="match_parent"
