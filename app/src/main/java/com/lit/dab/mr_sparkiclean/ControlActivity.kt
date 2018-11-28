@@ -32,8 +32,22 @@ class ControlActivity: AppCompatActivity(){
         ConnectToDevice(this).execute()
 
         control_test_send_1.setOnClickListener { sendCommand("a") }
-        control_test_send_2.setOnClickListener { sendCommand("b") }
+        control_test_send_2.setOnClickListener {
+            sendCommand("b")
+            recieveResponse()
+        }
         control_led_disconnect.setOnClickListener { disconnect() }
+    }
+
+    private fun recieveResponse() {
+        if(m_bluetoothSocket != null) {
+            try {
+                val temp = m_bluetoothSocket!!.inputStream.read()
+                Log.i("Response", temp.toString())
+            } catch(e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun sendCommand(input: String) {
