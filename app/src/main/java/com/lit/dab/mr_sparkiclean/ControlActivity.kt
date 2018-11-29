@@ -31,15 +31,15 @@ class ControlActivity: AppCompatActivity(){
 
         ConnectToDevice(this).execute()
 
-        control_test_send_1.setOnClickListener { sendCommand("a") }
-        control_test_send_2.setOnClickListener {
-            sendCommand("b")
-            recieveResponse()
+        control_test_send_1.setOnClickListener {
+            sendCommand("0.3,0.3")
+            receiveResponse()
         }
+        control_test_send_2.setOnClickListener { sendCommand("a") }
         control_led_disconnect.setOnClickListener { disconnect() }
     }
 
-    private fun recieveResponse() {
+    private fun receiveResponse() {
         if(m_bluetoothSocket != null) {
             try {
                 val temp = m_bluetoothSocket!!.inputStream.read()

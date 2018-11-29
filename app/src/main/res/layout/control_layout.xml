@@ -40,7 +40,7 @@
             android:textSize="30sp"/>
 
         <Button
-            android:id="@+id/control_test_send_2"
+            android:id="@+id/control_test_send_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clean Picture"
@@ -58,7 +58,7 @@
 
 
         <Button
-            android:id="@+id/control_test_send_1"
+            android:id="@+id/control_test_send_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Obstacle Picture"
