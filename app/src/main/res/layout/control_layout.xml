@@ -82,6 +82,6 @@
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_items"
-        app:itemTextColor="@color/colorPrimaryDark" />
+        app:itemTextColor="@color/colorAccent" />
 
 </android.support.constraint.ConstraintLayout>
