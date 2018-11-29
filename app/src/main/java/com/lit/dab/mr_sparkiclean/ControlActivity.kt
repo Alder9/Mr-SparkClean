@@ -71,21 +71,24 @@ class ControlActivity: AppCompatActivity(){
 
         control_test_send_1.setOnClickListener {
             sendCommand("0.3,0.3")
-            receiveResponse()
+            val resp = receiveResponse()
         }
         control_test_send_2.setOnClickListener { sendCommand("a") }
         control_led_disconnect.setOnClickListener { disconnect() }
     }
 
-    private fun receiveResponse() {
+    private fun receiveResponse(): String {
+        var responseString: String = ""
         if(m_bluetoothSocket != null) {
             try {
-                val temp = m_bluetoothSocket!!.inputStream.read()
-                Log.i("Response", temp.toString())
+                val response = m_bluetoothSocket!!.inputStream.read()
+                responseString = response.toString()
             } catch(e: IOException) {
                 e.printStackTrace()
             }
         }
+
+        return responseString
     }
 
     private fun sendCommand(input: String) {
