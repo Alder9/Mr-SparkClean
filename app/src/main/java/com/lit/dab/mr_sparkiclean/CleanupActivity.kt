@@ -25,9 +25,6 @@ class CleanupActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
 
-            R.id.tab3 -> {
-                return@OnNavigationItemSelectedListener true
-            }
         }
         false
     }
@@ -40,11 +37,5 @@ class CleanupActivity : AppCompatActivity() {
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-        val sparkiLogo: ImageView = findViewById(R.id.toolbar_logo)
-        sparkiLogo.setOnClickListener {
-            val intent = Intent(this, SelectDeviceActivity::class.java)
-            startActivity(intent)
-        }
     }
 }

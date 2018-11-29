@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.widget.Button
 
 class MainActivity : AppCompatActivity(){
 
@@ -22,10 +23,6 @@ class MainActivity : AppCompatActivity(){
                 overridePendingTransition(0,0)
                 return@OnNavigationItemSelectedListener true
             }
-
-            R.id.tab3 -> {
-                return@OnNavigationItemSelectedListener true
-            }
         }
         false
     }
@@ -36,7 +33,10 @@ class MainActivity : AppCompatActivity(){
         setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar?.setTitle(null)
 
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        val sparkiLogo: Button = findViewById(R.id.sparkibutton)
+        sparkiLogo.setOnClickListener {
+            val intent = Intent(this, SelectDeviceActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

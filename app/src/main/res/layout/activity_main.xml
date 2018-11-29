@@ -6,32 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.lit.dab.mr_sparkiclean.SplashScreen"
+        android:background="@drawable/background_gradient">
+
+
+        <!-- The primary full-screen view. This can be replaced with whatever view
+             is needed to present your content, e.g. VideoView, SurfaceView,
+             TextureView, etc. -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="106dp"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/mr_sparklean"
+            android:textColor="#000"
+            android:textSize="50sp" />
+
+        <ImageView
+            android:contentDescription="@drawable/ic_sparki_logo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent">
+            android:src="@drawable/ic_sparki_logo"
+            android:layout_gravity="center"/>
 
-            <ImageView
-                android:id="@+id/toolbar_logo"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/ic_sparki_logo" />
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+        <Button
+            android:id="@+id/sparkibutton"
+            android:text="Connect to Sparki!"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"/>
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_items"
-        app:itemTextColor="@color/colorPrimaryDark" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

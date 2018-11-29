@@ -9,9 +9,4 @@
         android:id="@+id/tab2"
         android:title="Tab 2"
         />
-
-    <item
-        android:id="@+id/tab3"
-        android:title="Tab 3"
-        />
 </menu>
