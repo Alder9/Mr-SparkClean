@@ -32,6 +32,11 @@ class MapActivity : AppCompatActivity(){
         false
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0) // remove animation when back button is pressed
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map_layout)

@@ -47,9 +47,16 @@ class ControlActivity: AppCompatActivity(){
         false
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0) // remove animation when back button is pressed
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_layout)
+
+        // Prevent crashing when flipping between tabs
         if(intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS) != null) {
             m_address = intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS)
         }
