@@ -4,30 +4,84 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
-        android:id="@+id/control_test_send_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test send 1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
 
-    <Button
-        android:id="@+id/control_test_send_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test send 2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/control_test_send_1"/>
+            <ImageView
+                android:id="@+id/toolbar_logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_sparki_logo"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
 
-    <Button
-        android:id="@+id/control_led_disconnect"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/firstExplain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cleanExplain"
+            android:layout_marginTop="70dp"
+            android:gravity="center"
+            android:textSize="30sp"/>
+
+        <Button
+            android:id="@+id/control_test_send_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clean Picture"
+            android:textSize="20dp"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/secondExplain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/obstacleExplain"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:layout_marginTop="20dp"/>
+
+
+        <Button
+            android:id="@+id/control_test_send_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Obstacle Picture"
+            android:textSize="25dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/control_led_disconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clean!"
+            android:textSize="40dp"
+            android:layout_marginTop="120dp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Disconnect"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/control_test_send_2"/>
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_navigation_items"
+        app:itemTextColor="@color/colorPrimaryDark" />
 
 </android.support.constraint.ConstraintLayout>

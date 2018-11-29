@@ -2,4 +2,6 @@
     <string name="app_name">Mr-SparkiClean</string>
     <string name="action_settings">Settings</string>
     <string name="mr_sparklean">Mr. Sparklean</string>
+    <string name="cleanExplain">Take a picture of your clean room!</string>
+    <string name="obstacleExplain">Take a picture of your dirty room that needs to be cleaned!</string>
 </resources>
