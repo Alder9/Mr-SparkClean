@@ -23,6 +23,7 @@ class ControlActivity: AppCompatActivity(){
         lateinit var m_progress: ProgressDialog
         lateinit var m_bluetoothAdapter: BluetoothAdapter
         var m_isConnected: Boolean = false
+        lateinit var isCleaning: String
         lateinit var m_address: String
     }
 
@@ -37,7 +38,9 @@ class ControlActivity: AppCompatActivity(){
 
             R.id.tab2 -> {
                 val intent = Intent(this, MapActivity::class.java)
+                isCleaning = "not"
                 intent.putExtra(m_address, m_address)
+                intent.putExtra(isCleaning, isCleaning)
                 startActivity(intent)
                 overridePendingTransition(0,0)
                 return@OnNavigationItemSelectedListener true
@@ -68,16 +71,23 @@ class ControlActivity: AppCompatActivity(){
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         ConnectToDevice(this).execute()
-
         control_test_send_1.setOnClickListener {
-            sendCommand("0.3,0.3")
+            sendCommand("0.5000.500") // making it a limit of 5 chars to send per coordinate so 10 in total, 1/2 is x coord, 1/2 is y coord
             val resp = receiveResponse()
         }
-        control_test_send_2.setOnClickListener { sendCommand("a") }
-        control_led_disconnect.setOnClickListener { disconnect() }
+        control_test_send_2.setOnClickListener { disconnect() }
+        // Clean button pressed, go to map activity
+        control_led_disconnect.setOnClickListener {
+            val toMap = Intent(this, MapActivity::class.java)
+            isCleaning = "cleaning"
+            toMap.putExtra(m_address, m_address)
+            toMap.putExtra(isCleaning, isCleaning)
+            startActivity(toMap)
+            overridePendingTransition(0,0)
+        }
     }
 
-    private fun receiveResponse(): String {
+    fun receiveResponse(): String {
         var responseString: String = ""
         if(m_bluetoothSocket != null) {
             try {

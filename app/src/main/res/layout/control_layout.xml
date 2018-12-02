@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_items"
+        app:menu="@menu/bottom_navigation_items_tab1"
         app:itemTextColor="@color/colorAccent" />
 
 </android.support.constraint.ConstraintLayout>
