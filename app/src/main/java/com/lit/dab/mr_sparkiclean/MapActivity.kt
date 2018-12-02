@@ -1,19 +1,30 @@
 package com.lit.dab.mr_sparkiclean
 
 import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.media.Image
 import android.os.Bundle
+import android.os.Handler
+import android.provider.Contacts
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.coroutines.experimental.android.UI
+import org.jetbrains.anko.async
 import java.io.IOException
+import kotlinx.coroutines.*
+import kotlinx.coroutines.experimental.*
 
 class MapActivity : AppCompatActivity(){
 
+    lateinit var sparkiImageView: ImageView
+    lateinit var mTextView: TextView
+    lateinit var mButton: Button
 
     companion object {
         lateinit var m_address: String
@@ -55,32 +66,47 @@ class MapActivity : AppCompatActivity(){
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        val sparkiImageView: ImageView = findViewById(R.id.sparki)
-        val mTextView: TextView = findViewById(R.id.textCleaning)
-        if(isCleaning == "cleaning"){
+        sparkiImageView = findViewById(R.id.sparki)
+        mTextView = findViewById(R.id.textCleaning)
+        mButton = findViewById(R.id.startButton)
+        if (isCleaning == "cleaning") {
             mTextView.setText("Now Cleaning")
-            sendCoordinate(0.345F, 0.300F, sparkiImageView)
+        }
+
+        mButton.setOnClickListener {
+            sendPath()
         }
     }
 
-    private fun sendPath(coordArray: Array<Float>) {
+    private fun sendPath() {
+        sendCoordinate(0.3F,0.3F, sparkiImageView)
 
+        sendCoordinate(0.5F,0.5F, sparkiImageView)
     }
+
 
     private fun sendCoordinate(x: Float, y: Float, sparkiImageView: ImageView) {
-        val x_string = x.toString()
-        val y_string = y.toString()
 
-        val padding_x: String = "0".repeat(5 - x_string.length)
-        val padding_y: String = "0".repeat(5 - y_string.length)
-        val stringToSend = x.toString() + padding_x + y.toString() + padding_y
-        sendCommand(stringToSend)
-        val resp = receiveResponse()
+        var resp = ""
+        runBlocking {
+            val job = launch {
+                val x_string = x.toString()
+                val y_string = y.toString()
 
-        if(resp == "97"){
-            Log.i("Reponse", resp)
-            setSparkiMapPose(sparkiImageView, x, 1-y)
+                val padding_x: String = "0".repeat(5 - x_string.length)
+                val padding_y: String = "0".repeat(5 - y_string.length)
+                val stringToSend = x.toString() + padding_x + y.toString() + padding_y
+                sendCommand(stringToSend)
+                resp = receiveResponse()
+                Log.i("Coordinate", "Response1: " + resp)
+            }
+            Log.i("Coordinate", "Sending Coordinate")
+            Log.i("Coordinate", "Response2: " + resp)
+            job.join()
+            runOnUiThread { setSparkiMapPose(x,y) }
+            delay(5000)
         }
+
     }
 
     private fun sendCommand(input: String) {
@@ -93,7 +119,7 @@ class MapActivity : AppCompatActivity(){
         }
     }
 
-    fun receiveResponse(): String {
+    private fun receiveResponse(): String {
         var responseString: String = ""
         if(ControlActivity.m_bluetoothSocket != null) {
             try {
@@ -108,10 +134,14 @@ class MapActivity : AppCompatActivity(){
     }
 
     // function to move sparki around the map
-    private fun setSparkiMapPose(sparki: ImageView, xbias: Float, ybias: Float) {
-        val sparkiParams = sparki.layoutParams as ConstraintLayout.LayoutParams
+    private fun setSparkiMapPose(xbias: Float, ybias: Float) {
+        Log.i("Coordinate", "test")
+        val sparkiParams = sparkiImageView.layoutParams as ConstraintLayout.LayoutParams
         sparkiParams.horizontalBias = xbias
         sparkiParams.verticalBias = ybias
+        sparkiImageView.layoutParams = sparkiParams
+
+        Log.i("Reponse", xbias.toString())
     }
 
     // function to draw an obstacle once we have found them
