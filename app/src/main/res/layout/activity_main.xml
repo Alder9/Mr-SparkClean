@@ -30,17 +30,12 @@
         >
 
         <ImageView
-        android:id="@+id/imageViewLeft"
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
         android:src="@mipmap/ic_launcher" />
-        <ImageView
-            android:id="@+id/imageViewRight"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:src="@mipmap/ic_launcher" />
+
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
