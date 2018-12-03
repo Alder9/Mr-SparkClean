@@ -2,11 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/tab1"
-        android:title="Tab 1"
-        />
+        android:title="Home" />
 
     <item
         android:id="@+id/tab2"
-        android:title="Tab 2"
-        />
+        android:icon="@drawable/ic_sparki_logo"
+        android:title="Map" />
 </menu>
