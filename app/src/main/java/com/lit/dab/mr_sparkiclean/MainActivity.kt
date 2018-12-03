@@ -1,14 +1,11 @@
 package com.lit.dab.mr_sparkiclean
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Color.*
-import android.graphics.ColorSpace
 import android.graphics.Matrix
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -17,10 +14,7 @@ import android.view.View
 import android.widget.ImageView
 
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.Console
 import java.lang.Math.abs
-import java.lang.Math.floor
-import java.util.Collections.rotate
 
 class MainActivity : AppCompatActivity() {
     private val REQUEST_CLEAN = 1
@@ -59,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             when (requestCode) {
                 REQUEST_CLEAN -> {
                     val bitmapImg = data?.extras?.get("img") as Bitmap
@@ -73,9 +67,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processPhoto (method: String, image: Bitmap) {
+    private fun processPhoto(method: String, image: Bitmap) {
         val pixels = IntArray(image.height * image.width)
-        image.getPixels(pixels, 0, image.getWidth(), 0, 0, image.width, image.height)
+        image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
 
         getBlobCoordsByColor(95, parseColor("red"), image, "all")
     }
@@ -85,37 +79,33 @@ class MainActivity : AppCompatActivity() {
         val height = image.height
         val pixels = IntArray(width * height)
         val filteredPixels = IntArray(width * height)
-        image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.getHeight())
+        image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
         val imageCopy = pixels.copyOf()
 
         //Filter image by color
-        for(i in pixels.indices) {
-            when(filterby) {
-                "red" ->
-                {
+        for (i in pixels.indices) {
+            when (filterby) {
+                "red" -> {
                     if (abs(red(pixels[i]) - red(color)) < threshold) {
                         //Allow this pixel into our final image
                         filteredPixels[i] = pixels[i]
                     }
 
                 }
-                "green" ->
-                {
+                "green" -> {
                     if (abs(green(color) - green(pixels[i])) < threshold) {
                         //Allow this pixel into our final image
                         filteredPixels[i] = pixels[i]
                     }
                 }
-                "blue" ->
-                {
+                "blue" -> {
                     if (abs(blue(color) - blue(pixels[i])) < threshold) {
                         //Allow this pixel into our final image
                         filteredPixels[i] = pixels[i]
                     }
                 }
-                "all" ->
-                {
-                    if (abs(red(color) - red(pixels[i])) < threshold &&  abs(green(color) - green(pixels[i])) < threshold && abs(blue(color) - blue(pixels[i])) < threshold) {
+                "all" -> {
+                    if (abs(red(color) - red(pixels[i])) < threshold && abs(green(color) - green(pixels[i])) < threshold && abs(blue(color) - blue(pixels[i])) < threshold) {
                         //Allow this pixel into our final image
                         filteredPixels[i] = pixels[i]
                     }
@@ -127,17 +117,17 @@ class MainActivity : AppCompatActivity() {
 
         val blobs: ArrayList<ArrayList<Int>> = ArrayList()
 
-        for(i in filteredPixels.indices) {
+        for (i in filteredPixels.indices) {
             if (filteredPixels[i] != 0) {
-                Log.d(":","Adding blob...")
+                Log.d(":", "Adding blob...")
                 val currentBlob = ArrayList<Int>()
                 currentBlob.add(i)
                 val x = i % width
                 val y = i / width
                 getBlob(x, y, width, filteredPixels, currentBlob)
                 blobs.add(currentBlob)
-                for (i in currentBlob) {
-                    filteredPixels[i] = 0
+                for (idx in currentBlob) {
+                    filteredPixels[idx] = 0
                 }
             }
         }
@@ -166,13 +156,78 @@ class MainActivity : AppCompatActivity() {
                     maxY = y
                 }
             }
-            val area = (maxX - minX)*(maxY - minY)
+            val area = (maxX - minX) * (maxY - minY)
             //Maximum allowable indicies in blob is 290... account for some rough edges or non-square shape
             if (area < 50) {
                 remove.add(blob)
             }
         }
         blobs.removeAll(remove)
+
+        //Merge blobs
+
+        val merge: ArrayList<Pair<Int, Int>> = ArrayList()
+        val thresh = 50
+        for (i in blobs.indices) {
+            val blob1 = blobs[i]
+            var maxX = 0
+            var maxY = 0
+            var minX = image.width
+            var minY = image.height
+            for (i in blob1) {
+                val x = i % width
+                val y = i / width
+                if (x < minX) {
+                    minX = x
+                }
+                if (x > maxX) {
+                    maxX = x
+                }
+                if (y < minY) {
+                    minY = y
+                }
+                if (y > maxY) {
+                    maxY = y
+                }
+            }
+            for (j in blobs.indices) {
+                val blob2 = blobs[j]
+                var maxX2 = 0
+                var maxY2 = 0
+                var minX2 = image.width
+                var minY2 = image.height
+                for (i in blob2) {
+                    val x = i % width
+                    val y = i / width
+                    if (x < minX2) {
+                        minX2 = x
+                    }
+                    if (x > maxX2) {
+                        maxX2 = x
+                    }
+                    if (y < minY2) {
+                        minY2 = y
+                    }
+                    if (y > maxY2) {
+                        maxY2 = y
+                    }
+                }
+                if (abs(minX2 - maxX) < thresh || abs(maxX2 - minX) < thresh || abs(minY2 - maxY) < thresh || abs(maxY2 - minY) < thresh || abs(minX2 - minX) < thresh || abs(maxX2 - maxX) < thresh || abs(minY2 - minY) < thresh || abs(maxY2 - maxY) < thresh) {
+                    var add = true
+                    for (pair in merge) {
+                        if (pair.first == i || pair.second == i || pair.first == j || pair.second == j) {
+                            add = false
+                        }
+                    }
+                    if (add && i != j) {
+                        merge.add((Pair(i, j)))
+                    }
+                }
+            }
+        }
+
+        //merge blobs
+        mergeBlobs(merge, blobs, width, height)
 
 
         //Draw blobs
@@ -218,22 +273,135 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getBlob(x: Int, y: Int, width: Int, pixels: IntArray, blob: ArrayList<Int>) {
-        val idx = x + y*width
+        val idx = x + y * width
 
         Log.d("X", x.toString())
         Log.d("Y", y.toString())
         Log.d(":", "---------")
 
-        if(blob.size > 290) {
-            Log.d("ERR","Blob size too large, stopping recursion...")
+        if (blob.size > 290) {
+            Log.d("ERR", "Blob size too large, stopping recursion...")
             return
         }
 
         blob.add(idx)
-        if (x-1 >= 0 && pixels[idx-1] != 0 && !blob.contains(idx-1)) {getBlob(x - 1, y, width, pixels, blob)}
-        if (y-1 >= 0 && pixels[idx-width] != 0 && !blob.contains(idx-width)) {getBlob(x, y - 1, width, pixels, blob)}
-        if (x+1 < width && pixels[idx+1] != 0 && !blob.contains(idx+1)) {getBlob(x + 1, y, width, pixels, blob)}
-        if (y+1 < pixels.size/width - 1 && pixels[idx+width] != 0 && !blob.contains(idx+width)) {getBlob(x, y + 1, width, pixels, blob)}
+        if (x - 1 >= 0 && pixels[idx - 1] != 0 && !blob.contains(idx - 1)) {
+            getBlob(x - 1, y, width, pixels, blob)
+        }
+        if (y - 1 >= 0 && pixels[idx - width] != 0 && !blob.contains(idx - width)) {
+            getBlob(x, y - 1, width, pixels, blob)
+        }
+        if (x + 1 < width && pixels[idx + 1] != 0 && !blob.contains(idx + 1)) {
+            getBlob(x + 1, y, width, pixels, blob)
+        }
+        if (y + 1 < pixels.size / width - 1 && pixels[idx + width] != 0 && !blob.contains(idx + width)) {
+            getBlob(x, y + 1, width, pixels, blob)
+        }
     }
 
+    private fun mergeBlobs(merge: ArrayList<Pair<Int, Int>>, blobs: ArrayList<ArrayList<Int>>, width: Int, height: Int) {
+        Log.d("length of merge: ", merge.size.toString())
+        for (pair in merge) {
+            Log.d("--------","-------------")
+            Log.d("b1",pair.first.toString())
+            Log.d("b2",pair.second.toString())
+        }
+        if (merge.size == 0) {
+            return
+        } else {
+            val newBlobs = ArrayList<ArrayList<Int>>()
+            val remove = ArrayList<ArrayList<Int>>()
+            for (pair in merge) {
+                val newBlob = ArrayList<Int>()
+                val b1Index = pair.first
+                val b2Index = pair.second
+
+                for (i in blobs[b1Index]) {
+                    if(!newBlob.contains(i)) {
+                        newBlob.add(i)
+                    }
+                }
+                for (i in blobs[b2Index]) {
+                    if(!newBlob.contains(i)) {
+                        newBlob.add(i)
+                    }
+                }
+
+                remove.add(blobs[b1Index])
+                remove.add(blobs[b2Index])
+                newBlobs.add(newBlob)
+            }
+
+            Log.d("length of blobs, b4: ", blobs.size.toString())
+
+            blobs.removeAll(remove)
+            blobs.addAll(newBlobs)
+
+            Log.d("length of blobs, af: ", blobs.size.toString())
+
+            merge.clear()
+
+            val thresh = 50
+            for (i in blobs.indices) {
+                val blob1 = blobs[i]
+                var maxX = 0
+                var maxY = 0
+                var minX = width
+                var minY = height
+                for (i in blob1) {
+                    val x = i % width
+                    val y = i / width
+                    if (x < minX) {
+                        minX = x
+                    }
+                    if (x > maxX) {
+                        maxX = x
+                    }
+                    if (y < minY) {
+                        minY = y
+                    }
+                    if (y > maxY) {
+                        maxY = y
+                    }
+                }
+                for (j in blobs.indices) {
+                    val blob2 = blobs[j]
+                    var maxX2 = 0
+                    var maxY2 = 0
+                    var minX2 = width
+                    var minY2 = height
+                    for (i in blob2) {
+                        val x = i % width
+                        val y = i / width
+                        if (x < minX2) {
+                            minX2 = x
+                        }
+                        if (x > maxX2) {
+                            maxX2 = x
+                        }
+                        if (y < minY2) {
+                            minY2 = y
+                        }
+                        if (y > maxY2) {
+                            maxY2 = y
+                        }
+                    }
+                    if (abs(minX2 - maxX) < thresh || abs(maxX2 - minX) < thresh || abs(minY2 - maxY) < thresh || abs(maxY2 - minY) < thresh || abs(minX2 - minX) < thresh || abs(maxX2 - maxX) < thresh || abs(minY2 - minY) < thresh || abs(maxY2 - maxY) < thresh) {
+                        var add = true
+                        for (pair in merge) {
+                            if (pair.first == i || pair.second == i || pair.first == j || pair.second == j) {
+                                add = false
+                            }
+                        }
+                        if (add && i != j) {
+                            merge.add((Pair(i, j)))
+                        }
+                    }
+                }
+            }
+
+            mergeBlobs(merge, blobs, width, height)
+        }
+    }
 }
+
