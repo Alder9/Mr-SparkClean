@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         val pixels = IntArray(image.height * image.width)
         image.getPixels(pixels, 0, image.getWidth(), 0, 0, image.width, image.height)
 
-        getBlobCoordsByColor(100, parseColor("red"), image, "all")
+        getBlobCoordsByColor(95, parseColor("red"), image, "all")
     }
 
     private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String) {
