@@ -136,35 +136,43 @@ class MainActivity : AppCompatActivity() {
 
         val blobs: ArrayList<IntArray> = ArrayList()
 
-        //Scan for non-white pixel
-        /*for (i in 0..(coloredPixels.size - 1)) {
-            if (coloredPixels[i] != 0) {
-                //Start recursion
-                val x = i % width
-                val y = i / width
-                currentBlob[i] = coloredPixels[i]
-                getBlob(x, y, width, coloredPixels, currentBlob)
-                blobs.add(currentBlob)
-                //Remove pixels in blob from image, reset currentBlob, and keep scanning
-                for (i in (0..(currentBlob.size-1)).withIndex()) {
-                    coloredPixels[i] = 0
-                    currentBlob[i] = 0
-                }
-            }
-        }*/
-
+        val savedImage = coloredPixels.copyOf()
         for(i in coloredPixels.indices) {
             if (coloredPixels[i] != 0) {
+                Log.d(":", "Adding blob...")
                 val currentBlob = IntArray(width * height)
+                currentBlob[i] = coloredPixels[i]
                 val x = i % width
                 val y = i / width
                 getBlob(x, y, width, coloredPixels, currentBlob)
                 blobs.add(currentBlob)
-                for(i in currentBlob.indices) {
-                    if(currentBlob[i] != 0) {
+                var maxX = 0
+                var maxY = 0
+                var minX = image.width
+                var minY = image.height
+                for (i in currentBlob.indices) {
+                    val x = i % width
+                    val y = i / width
+                    if (currentBlob[i] != 0 && x < minX) {
+                        minX = x
+                    }
+                    if (currentBlob[i] != 0 && x > maxX) {
+                        maxX = x
+                    }
+                    if (currentBlob[i] != 0 && y < minY) {
+                        minY = y
+                    }
+                    if (currentBlob[i] != 0 && y > maxY) {
+                        maxY = y
+                    }
+                    if (currentBlob[i] != 0) {
                         coloredPixels[i] = 0
                     }
                 }
+                Log.d("Maxx: ", maxX.toString())
+                Log.d("Minx: ", minX.toString())
+                Log.d("Maxy: ", maxY.toString())
+                Log.d("Miny: ", minY.toString())
             }
         }
         val currentBlob = IntArray(width * height)
@@ -177,7 +185,6 @@ class MainActivity : AppCompatActivity() {
 
         //Get coordinates per blob
         for (blob in blobs) {
-            Log.d("Proccessing blob", "b")
             var maxX = 0
             var maxY = 0
             var minX = image.width
@@ -199,10 +206,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-            Log.d("Maxx: ", maxX.toString())
+            /*Log.d("Maxx: ", maxX.toString())
             Log.d("Minx: ", minX.toString())
             Log.d("Maxy: ", maxY.toString())
-            Log.d("Miny: ", minY.toString())
+            Log.d("Miny: ", minY.toString())*/
 
             for (i in (minX + 1)..(maxX - 1)) {
                 coloredPixels[i + minY * width] = parseColor("blue")
@@ -213,51 +220,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        val displayedImage = createBitmap(coloredPixels, image.width, image.height, Bitmap.Config.ARGB_8888)
+        val displayedImage = createBitmap(savedImage, image.width, image.height, Bitmap.Config.ARGB_8888)
         val imageView = findViewById<ImageView>(R.id.imageView)
         imageView.setImageBitmap(displayedImage)
     }
 
     private fun getBlob(x: Int, y: Int, width: Int, pixels: IntArray, blob: IntArray) {
         val idx = x + y*width
-        val idxLeft = idx-1
-        val idxRight = idx+1
-        val idxTop = idx + width
-        val idxBottom = idx - width
+
         Log.d("X", x.toString())
         Log.d("Y", y.toString())
         Log.d(":", "---------")
 
-        //For all neighbors where the pixel is in bounds, the pixel is not already a part of the blob, the pixel should be added to the blob
-        //Ddd to Blob and call getBlob on neighbor
+        blob[idx] = pixels[idx]
+        if (x-1 >= 0 && pixels[idx-1] != 0 && blob[idx-1] == 0) {getBlob(x - 1, y, width, pixels, blob)}
+        if (y-1 >= 0 && pixels[idx-width] != 0 && blob[idx-width] == 0) {getBlob(x, y - 1, width, pixels, blob)}
+        if (x+1 <= width && pixels[idx+1] != 0 && blob[idx+1] == 0) {getBlob(x + 1, y, width, pixels, blob)}
+        if (y+1 <= pixels.size/width - 1 && pixels[idx+width] != 0 && blob[idx+width] == 0) {getBlob(x, y + 1, width, pixels, blob)}
 
-        if (x-1 >= 0){
-            if(blob[idxLeft] == 0 && pixels[idxLeft] != 0) {
-                blob[idxLeft] = pixels[idxLeft]
-                getBlob(x - 1, y, width, pixels, blob)
-            }
-        }
-
-        if (x+1 <= width){
-            if(blob[idxRight] == 0 && pixels[idxRight] != 0) {
-                blob[idxRight] = pixels[idxRight]
-                getBlob(x + 1, y, width, pixels, blob)
-            }
-        }
-
-        if(y-1 >= 0){
-            if(blob[idxBottom] == 0 && pixels[idxBottom] != 0) {
-                blob[idxBottom] = pixels[idxBottom]
-                getBlob(x, y - 1, width, pixels, blob)
-            }
-        }
-
-        if(y+1 <= pixels.size/width - 1) {
-            if(blob[idxTop] == 0 && pixels[idxTop] != 0) {
-                blob[idxTop] = pixels[idxTop]
-                getBlob(x, y + 1, width, pixels, blob)
-            }
-        }
     }
 
 }
