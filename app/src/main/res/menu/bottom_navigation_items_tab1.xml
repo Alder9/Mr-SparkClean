@@ -4,6 +4,7 @@
     tools:ignore="MissingDefaultResource">
     <item
         android:id="@+id/tab1"
+<<<<<<< HEAD:app/src/main/res/menu/bottom_navigation_items.xml
         android:icon="@drawable/iconfinder_home"
         android:title="Home" />
 
@@ -12,4 +13,13 @@
         android:icon="@drawable/ic_sparki_logo"
         android:iconTint="#000000"
         android:title="Map" />
+=======
+        android:title="@string/tab1"
+        />
+
+    <item
+        android:id="@+id/tab2"
+        android:title="@string/tab2"
+        />
+>>>>>>> thomas:app/src/main/res/menu/bottom_navigation_items_tab1.xml
 </menu>

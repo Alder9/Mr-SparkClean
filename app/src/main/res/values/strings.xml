@@ -4,4 +4,6 @@
     <string name="mr_sparklean">Mr. Sparklean</string>
     <string name="cleanExplain">Take a picture of your clean room!</string>
     <string name="obstacleExplain">Take a picture of your dirty room that needs to be cleaned!</string>
+    <string name="tab1">Home</string>
+    <string name="tab2">Map</string>
 </resources>

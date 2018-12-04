@@ -45,7 +45,7 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/control_test_send_2"
+            android:id="@+id/control_test_send_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -63,7 +63,7 @@
 
 
         <Button
-            android:id="@+id/control_test_send_1"
+            android:id="@+id/control_test_send_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -86,8 +86,8 @@
         android:layout_height="57dp"
         android:background="@color/tabLightColor"
         app:itemBackground="@color/tabLightColor"
-        app:itemTextColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_items" />
+        app:menu="@menu/bottom_navigation_items_tab1"
+        app:itemTextColor="@color/colorAccent" />
 
 </android.support.constraint.ConstraintLayout>

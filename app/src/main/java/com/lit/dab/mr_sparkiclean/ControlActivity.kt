@@ -23,33 +23,82 @@ class ControlActivity: AppCompatActivity(){
         lateinit var m_progress: ProgressDialog
         lateinit var m_bluetoothAdapter: BluetoothAdapter
         var m_isConnected: Boolean = false
+        lateinit var isCleaning: String
         lateinit var m_address: String
+    }
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when(item.itemId) {
+            R.id.tab1 -> {
+                val intent = Intent(this, ControlActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(0,0)
+                return@OnNavigationItemSelectedListener true
+            }
+
+            R.id.tab2 -> {
+                val intent = Intent(this, MapActivity::class.java)
+                isCleaning = "not"
+                intent.putExtra(m_address, m_address)
+                intent.putExtra(isCleaning, isCleaning)
+                startActivity(intent)
+                overridePendingTransition(0,0)
+                return@OnNavigationItemSelectedListener true
+            }
+
+        }
+        false
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0) // remove animation when back button is pressed
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_layout)
-        m_address = intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS)
+
+        // Prevent crashing when flipping between tabs
+        if(intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS) != null) {
+            m_address = intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS)
+        }
+        else{
+            m_address = intent.getStringExtra(MapActivity.m_address)
+        }
+
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         ConnectToDevice(this).execute()
-
-        control_test_send_1.setOnClickListener { sendCommand("a") }
-        control_test_send_2.setOnClickListener {
-            sendCommand("b")
-            recieveResponse()
+        control_test_send_1.setOnClickListener {
+            sendCommand("0.5000.500") // making it a limit of 5 chars to send per coordinate so 10 in total, 1/2 is x coord, 1/2 is y coord
+            val resp = receiveResponse()
         }
-        control_led_disconnect.setOnClickListener { disconnect() }
+        control_test_send_2.setOnClickListener { disconnect() }
+        // Clean button pressed, go to map activity
+        control_led_disconnect.setOnClickListener {
+            val toMap = Intent(this, MapActivity::class.java)
+            isCleaning = "cleaning"
+            toMap.putExtra(m_address, m_address)
+            toMap.putExtra(isCleaning, isCleaning)
+            startActivity(toMap)
+            overridePendingTransition(0,0)
+        }
     }
 
-    private fun recieveResponse() {
+    fun receiveResponse(): String {
+        var responseString: String = ""
         if(m_bluetoothSocket != null) {
             try {
-                val temp = m_bluetoothSocket!!.inputStream.read()
-                Log.i("Response", temp.toString())
+                val response = m_bluetoothSocket!!.inputStream.read()
+                responseString = response.toString()
             } catch(e: IOException) {
                 e.printStackTrace()
             }
         }
+
+        return responseString
     }
 
     private fun sendCommand(input: String) {
