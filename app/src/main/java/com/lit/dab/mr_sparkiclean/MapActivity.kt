@@ -6,6 +6,7 @@ import android.media.Image
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Contacts
+import android.support.annotation.MainThread
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -15,10 +16,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.coroutines.experimental.android.UI
-import org.jetbrains.anko.async
 import java.io.IOException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.experimental.*
+import java.lang.Exception
+import java.util.concurrent.locks.ReentrantLock
+import javax.xml.transform.Result
 
 class MapActivity : AppCompatActivity(){
 
@@ -78,38 +81,67 @@ class MapActivity : AppCompatActivity(){
         }
     }
 
-    private fun sendPath() {
-        sendCoordinate(0.3F,0.3F, sparkiImageView)
+    val temp = listOf(Pair(0.5F, 0.5F), Pair(0.7F, 0.7F))
+    var busy = false
+    var index = 0
 
-        sendCoordinate(0.5F,0.5F, sparkiImageView)
+    private val lock = ReentrantLock()
+    private val condition = lock.newCondition()
+
+    private fun sendPath() {
+        if(index == temp.size){
+            index = 0
+            return
+        }
+        val coords = temp.get(index)
+        launch (UI) {
+            while(busy){
+                delay(2000)
+            }
+            busy = true
+            Log.i("Pair", coords.toString())
+            val job = async { sendCoordinateAndUpdateSparki(coords.first, coords.second) }
+            job.await()
+        }
+        index++
+        sendPath()
     }
 
-
-    private fun sendCoordinate(x: Float, y: Float, sparkiImageView: ImageView) {
-
-        var resp = ""
-        runBlocking {
-            val job = launch {
+    private fun sendCoordinateAndUpdateSparki(x: Float, y: Float) {
+        async(UI){
+            try{
+                busy = true
+                var resp = ""
                 val x_string = x.toString()
                 val y_string = y.toString()
 
                 val padding_x: String = "0".repeat(5 - x_string.length)
                 val padding_y: String = "0".repeat(5 - y_string.length)
                 val stringToSend = x.toString() + padding_x + y.toString() + padding_y
-                sendCommand(stringToSend)
-                resp = receiveResponse()
-                Log.i("Coordinate", "Response1: " + resp)
+                val work1 = async(CommonPool) { sendCommand(stringToSend) }
+                work1.await()
+                val work2 = async(CommonPool) {receiveResponse()}
+                val result = work2.await()
+                Log.i("Coordinate", "Response1: " + result)
+                Log.i("Coordinate", "Sending Coordinate")
+                Log.i("Coordinate", "Response2: " + result)
+
+                if(result == "97"){
+                    setSparkiMapPose(x,1-y)
+                }
             }
-            Log.i("Coordinate", "Sending Coordinate")
-            Log.i("Coordinate", "Response2: " + resp)
-            job.join()
-            runOnUiThread { setSparkiMapPose(x,y) }
-            delay(5000)
+            catch (e: Exception){
+                e.printStackTrace()
+            }
+            finally {
+                busy = false
+            }
+
         }
 
     }
 
-    private fun sendCommand(input: String) {
+    suspend fun sendCommand(input: String) {
         if(ControlActivity.m_bluetoothSocket != null) {
             try {
                 ControlActivity.m_bluetoothSocket!!.outputStream.write(input.toByteArray())
