@@ -85,9 +85,6 @@ class MapActivity : AppCompatActivity(){
     var busy = false
     var index = 0
 
-    private val lock = ReentrantLock()
-    private val condition = lock.newCondition()
-
     private fun sendPath() {
         if(index == temp.size){
             index = 0
