@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -20,6 +21,7 @@ import org.jetbrains.anko.toast
 
 class SelectDeviceActivity : AppCompatActivity() {
 
+
     private var m_bluetoothAdapter: BluetoothAdapter? = null
     private lateinit var m_pairedDevices: Set<BluetoothDevice>
     private val REQUEST_ENABLE_BLUETOOTH = 1
@@ -27,6 +29,7 @@ class SelectDeviceActivity : AppCompatActivity() {
     companion object {
         val EXTRA_ADDRESS: String = "Device_Address"
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,7 @@ class SelectDeviceActivity : AppCompatActivity() {
 
         select_device_refresh.setOnClickListener { pairedDeviceList() }
     }
+
 
     private fun pairedDeviceList() {
         m_pairedDevices = m_bluetoothAdapter!!.bondedDevices
@@ -87,6 +91,11 @@ class SelectDeviceActivity : AppCompatActivity() {
                 toast("Bluetooth cancelled")
             }
         }
+    }
+
+    fun onClickFun(view: View){
+        val intent = Intent(this, ControlActivity::class.java)
+        startActivity(intent)
     }
 
 }

@@ -8,25 +8,6 @@ import android.widget.Button
 
 class MainActivity : AppCompatActivity(){
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when(item.itemId) {
-            R.id.tab1 -> {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0,0)
-                return@OnNavigationItemSelectedListener true
-            }
-
-            R.id.tab2 -> {
-                val intent = Intent(this, CleanupActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0,0)
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

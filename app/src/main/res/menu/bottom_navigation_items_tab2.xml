@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="MissingDefaultResource">
     <item
         android:id="@+id/tab1"
-        android:title="@string/tab1"
-        
-        />
+        android:icon="@drawable/iconfinder_home"
+        android:title="@string/tab1" />
 
     <item
         android:id="@+id/tab2"
         android:title="@string/tab2"
+        android:icon="@drawable/ic_sparki_logo"
         />
 </menu>

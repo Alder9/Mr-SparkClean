@@ -18,7 +18,8 @@
 
             <ImageView
                 android:id="@+id/toolbar_logo"
-                android:layout_width="50dp"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_sparki_logo" />
@@ -32,5 +33,5 @@
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_items_tab1"
-        app:itemTextColor="@color/colorPrimaryDark" />
+        app:itemTextColor="@color/colorAccent" />
 </android.support.constraint.ConstraintLayout>
