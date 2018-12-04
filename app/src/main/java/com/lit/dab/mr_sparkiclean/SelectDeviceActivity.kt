@@ -92,10 +92,4 @@ class SelectDeviceActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun onClickFun(view: View){
-        val intent = Intent(this, ControlActivity::class.java)
-        startActivity(intent)
-    }
-
 }
