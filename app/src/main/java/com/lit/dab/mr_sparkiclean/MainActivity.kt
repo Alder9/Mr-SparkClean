@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
         //Merge blobs
 
         val merge: ArrayList<Pair<Int, Int>> = ArrayList()
-        val thresh = 50
+        val thresh = 30
         for (i in blobs.indices) {
             val blob1 = blobs[i]
             var maxX = 0
@@ -212,8 +212,8 @@ class MainActivity : AppCompatActivity() {
                         maxY2 = y
                     }
                 }
-                if (abs(minX2 - maxX) < thresh || abs(maxX2 - minX) < thresh || abs(minY2 - maxY) < thresh || abs(maxY2 - minY) < thresh || abs(minX2 - minX) < thresh || abs(maxX2 - maxX) < thresh || abs(minY2 - minY) < thresh || abs(maxY2 - maxY) < thresh) {
-                    var add = true
+                if ((abs(minX2 - maxX) < thresh || abs(maxX2 - minX) < thresh || abs(minX2 - minX) < thresh || abs(maxX2 - maxX) < thresh) && (abs(minY2 - maxY) < thresh || abs(maxY2 - minY) < thresh || abs(minY2 - minY) < thresh || abs(maxY2 - maxY) < thresh)) {
+                        var add = true
                     for (pair in merge) {
                         if (pair.first == i || pair.second == i || pair.first == j || pair.second == j) {
                             add = false
@@ -341,7 +341,7 @@ class MainActivity : AppCompatActivity() {
 
             merge.clear()
 
-            val thresh = 50
+            val thresh = 30
             for (i in blobs.indices) {
                 val blob1 = blobs[i]
                 var maxX = 0
@@ -386,7 +386,7 @@ class MainActivity : AppCompatActivity() {
                             maxY2 = y
                         }
                     }
-                    if (abs(minX2 - maxX) < thresh || abs(maxX2 - minX) < thresh || abs(minY2 - maxY) < thresh || abs(maxY2 - minY) < thresh || abs(minX2 - minX) < thresh || abs(maxX2 - maxX) < thresh || abs(minY2 - minY) < thresh || abs(maxY2 - maxY) < thresh) {
+                    if ((abs(minX2 - maxX) < thresh || abs(maxX2 - minX) < thresh || abs(minX2 - minX) < thresh || abs(maxX2 - maxX) < thresh) && (abs(minY2 - maxY) < thresh || abs(maxY2 - minY) < thresh || abs(minY2 - minY) < thresh || abs(maxY2 - maxY) < thresh)) {
                         var add = true
                         for (pair in merge) {
                             if (pair.first == i || pair.second == i || pair.first == j || pair.second == j) {
