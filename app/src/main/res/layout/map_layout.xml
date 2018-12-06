@@ -49,6 +49,18 @@
         app:layout_constraintTop_toTopOf="@+id/map_background"
         app:layout_constraintVertical_bias="1.0" />
 
+    <ImageView
+        android:id="@+id/obstacle"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        android:background="@drawable/obstacle"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -78,5 +90,120 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_background" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="1dp"
+        android:layout_height="267dp"
+        android:layout_marginStart="66.6dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="1dp"
+        android:layout_marginStart="66.6dp"
+        android:layout_height="267dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/line1"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="1dp"
+        android:layout_marginStart="66.6dp"
+        android:layout_height="267dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/line2"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+    <View
+        android:id="@+id/line4"
+        android:layout_width="1dp"
+        android:layout_marginStart="66.6dp"
+        android:layout_height="267dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/line3"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+    <View
+        android:id="@+id/line5"
+        android:layout_width="1dp"
+        android:layout_marginStart="66.6dp"
+        android:layout_height="267dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/line4"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/finLine"
+        android:layout_width="1dp"
+        android:layout_marginStart="66.6dp"
+        android:layout_height="267dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/line4"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/hLine1"
+        android:layout_width="400dp"
+        android:layout_marginBottom="66.75dp"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/hLine2"
+        android:layout_width="400dp"
+        android:layout_marginBottom="66.75dp"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/hLine1"
+        app:layout_constraintHorizontal_bias="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/hLine3"
+        android:layout_width="400dp"
+        android:layout_marginBottom="66.75dp"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/hLine2"
+        app:layout_constraintHorizontal_bias="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>

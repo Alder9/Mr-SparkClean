@@ -1,5 +1,6 @@
 package com.lit.dab.mr_sparkiclean
 
+import android.animation.FloatEvaluator
 import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.media.Image
@@ -26,6 +27,7 @@ import javax.xml.transform.Result
 class MapActivity : AppCompatActivity(){
 
     lateinit var sparkiImageView: ImageView
+    lateinit var obstacleImageView: ImageView
     lateinit var mTextView: TextView
     lateinit var mButton: Button
 
@@ -79,6 +81,8 @@ class MapActivity : AppCompatActivity(){
         mButton.setOnClickListener {
             sendPath()
         }
+
+        getObstacleCoords(60.0f,70.0f)
     }
 
     val temp = listOf(Pair(0.5F, 0.5F), Pair(0.7F, 0.7F))
@@ -174,8 +178,15 @@ class MapActivity : AppCompatActivity(){
     }
 
     // function to draw an obstacle once we have found them
-    private fun drawObstacle(){
+    private fun drawObstacle(xbias: Float, ybias: Float){
+        val obstacleParams = obstacleImageView.layoutParams as ConstraintLayout.LayoutParams
+        obstacleParams.horizontalBias = xbias
+        obstacleParams.verticalBias = ybias
+        obstacleImageView.layoutParams = obstacleParams
+    }
 
+    private fun getObstacleCoords(x: Float, y: Float){
+        drawObstacle(x, y)
     }
 
     val tempGraph = Array(4, {IntArray(4)})
