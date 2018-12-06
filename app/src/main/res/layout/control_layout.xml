@@ -49,8 +49,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Clean Picture"
+            android:text="cts1"
             android:textSize="20dp" />
+        <Button
+            android:id="@+id/takeClean"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Clean Picture"
+            android:textSize="20dp"
+            android:onClick="takeCleanPhoto"/>
 
         <TextView
             android:id="@+id/secondExplain"
@@ -67,8 +75,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Obstacle Picture"
+            android:text="cst2"
             android:textSize="25dp" />
+        <Button
+            android:id="@+id/takeObstacle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Obstacle Picture"
+            android:textSize="25dp"
+            android:onClick="takeDirtyPhoto"/>
 
         <Button
             android:id="@+id/control_led_disconnect"
