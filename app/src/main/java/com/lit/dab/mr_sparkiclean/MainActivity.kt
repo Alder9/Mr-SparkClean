@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         val pixels = IntArray(image.height * image.width)
         image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
 
-        getBlobCoordsByColor(95, parseColor("red"), image, "all")
+        getBlobCoordsByColor(110, parseColor("red"), image, "all")
     }
 
     private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String) {
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
         //Merge blobs
 
         val merge: ArrayList<Pair<Int, Int>> = ArrayList()
-        val thresh = 30
+        val thresh = 15
         for (i in blobs.indices) {
             val blob1 = blobs[i]
             var maxX = 0
@@ -341,7 +341,7 @@ class MainActivity : AppCompatActivity() {
 
             merge.clear()
 
-            val thresh = 30
+            val thresh = 15
             for (i in blobs.indices) {
                 val blob1 = blobs[i]
                 var maxX = 0
