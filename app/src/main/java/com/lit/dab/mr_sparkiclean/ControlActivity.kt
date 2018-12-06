@@ -191,11 +191,11 @@ class ControlActivity: AppCompatActivity(){
             when (requestCode) {
                 REQUEST_CLEAN -> {
                     val bitmapImg = data?.extras?.get("img") as Bitmap
-                    processPhoto("Basic", bitmapImg)
+                    processPhoto("Clean", bitmapImg)
                 }
                 REQUEST_DIRTY -> {
                     val bitmapImg = data?.extras?.get("img") as Bitmap
-                    processPhoto("Basic", bitmapImg)
+                    processPhoto("Dirty", bitmapImg)
                 }
             }
         }
@@ -204,13 +204,13 @@ class ControlActivity: AppCompatActivity(){
     private fun processPhoto(method: String, image: Bitmap) {
         val pixels = IntArray(image.height * image.width)
         image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
-        val blobIndices = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
+        val blobIndices = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all", method)
         for (i in blobIndices) {
             Log.d("Index: ", i.toString())
         }
     }
 
-    private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String): ArrayList<Int> {
+    private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String, method: String): ArrayList<Int> {
         val width = image.width
         val height = image.height
         val pixels = IntArray(width * height)
@@ -405,13 +405,13 @@ class ControlActivity: AppCompatActivity(){
         }
 
         //Un-comment to display image
-        /*
+
         val displayedImage = Bitmap.createBitmap(imageCopy, image.width, image.height, Bitmap.Config.ARGB_8888)
         val matrix = Matrix()
         matrix.postRotate(90.toFloat())
         val rotatedImage = Bitmap.createBitmap(displayedImage, 0, 0, image.width, image.height, matrix, false)
-        val imageView = findViewById<ImageView>(R.id.imageView)
-        imageView.setImageBitmap(rotatedImage)*/
+        val imageView = findViewById<ImageView>(R.id.photo)
+        imageView.setImageBitmap(rotatedImage)
 
         return blobIndices
     }

@@ -60,6 +60,7 @@
             android:textSize="20dp"
             android:onClick="takeCleanPhoto"/>
 
+
         <TextView
             android:id="@+id/secondExplain"
             android:layout_width="match_parent"
@@ -77,6 +78,7 @@
             android:layout_gravity="center"
             android:text="cst2"
             android:textSize="25dp" />
+
         <Button
             android:id="@+id/takeObstacle"
             android:layout_width="wrap_content"
@@ -85,6 +87,12 @@
             android:text="Obstacle Picture"
             android:textSize="25dp"
             android:onClick="takeDirtyPhoto"/>
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:src="@mipmap/ic_launcher" />
 
         <Button
             android:id="@+id/control_led_disconnect"
