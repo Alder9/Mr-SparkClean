@@ -193,6 +193,6 @@ class MapActivity : AppCompatActivity(){
 
     // Dijkstra's for path planning
     private fun runDijkstras(graph: Array<Int>, sourceVertex: Int){
-
+        
     }
 }
