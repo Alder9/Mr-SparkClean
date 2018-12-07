@@ -45,12 +45,14 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/control_test_send_1"
+            android:id="@+id/takeClean"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Clean Picture"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:onClick="takeCleanPhoto"/>
+
 
         <TextView
             android:id="@+id/secondExplain"
@@ -63,19 +65,26 @@
 
 
         <Button
-            android:id="@+id/control_test_send_2"
+            android:id="@+id/takeObstacle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Obstacle Picture"
-            android:textSize="25dp" />
+            android:textSize="25dp"
+            android:onClick="takeDirtyPhoto"/>
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:src="@mipmap/ic_launcher" />
 
         <Button
             android:id="@+id/control_led_disconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="50dp"
             android:text="Clean!"
             android:textSize="40sp" />
     </LinearLayout>

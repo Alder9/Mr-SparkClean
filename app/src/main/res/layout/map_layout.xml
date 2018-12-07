@@ -38,6 +38,19 @@
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"/>
 
     <ImageView
+        android:id="@+id/obstacle"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        android:background="@drawable/obstacle"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+    <ImageView
         android:id="@+id/sparki"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -49,17 +62,6 @@
         app:layout_constraintTop_toTopOf="@+id/map_background"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-        android:id="@+id/obstacle"
-        android:layout_width="66.6dp"
-        android:layout_height="66.6dp"
-        android:background="@drawable/obstacle"
-        app:layout_constraintBottom_toBottomOf="@+id/map_background"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintLeft_toLeftOf="@+id/map_background"
-        app:layout_constraintRight_toRightOf="@+id/map_background"
-        app:layout_constraintTop_toTopOf="@+id/map_background"
-        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
