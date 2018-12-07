@@ -45,13 +45,6 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/control_test_send_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="cts1"
-            android:textSize="20dp" />
-        <Button
             android:id="@+id/takeClean"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,14 +63,6 @@
             android:text="@string/obstacleExplain"
             android:textSize="30sp" />
 
-
-        <Button
-            android:id="@+id/control_test_send_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="cst2"
-            android:textSize="25dp" />
 
         <Button
             android:id="@+id/takeObstacle"
@@ -99,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="50dp"
             android:text="Clean!"
             android:textSize="40sp" />
     </LinearLayout>
