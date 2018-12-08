@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar?.setTitle(null)
+
         val sparkiLogo: Button = findViewById(R.id.sparkibutton)
         sparkiLogo.setOnClickListener {
             val intent = Intent (this, SelectDeviceActivity::class.java)
