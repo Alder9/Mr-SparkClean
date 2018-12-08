@@ -1,5 +1,6 @@
 package com.lit.dab.mr_sparkiclean
 
+import android.animation.FloatEvaluator
 import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.media.Image
@@ -22,6 +23,7 @@ import java.io.IOException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.experimental.*
 import java.lang.Exception
+import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import javax.xml.transform.Result
 import kotlin.math.abs
@@ -29,6 +31,7 @@ import kotlin.math.abs
 class MapActivity : AppCompatActivity(){
 
     lateinit var sparkiImageView: ImageView
+    lateinit var obstacleImageView: ImageView
     lateinit var mTextView: TextView
     lateinit var mButton: Button
 
@@ -86,12 +89,14 @@ class MapActivity : AppCompatActivity(){
             val path: MutableList<Int>
             setUpDijkstras(tempGraph)
             tempGraph[1][0] = 0
-            tempGraph[1][1] = 0
+            tempGraph[1][3] = 0
             prev = runDijkstras(tempGraph,0)
-            Log.i("Prev", prev.toString())
-            path = reconstructPath(prev,0,6)
-            Log.i("Prev", path.toString())
+            Log.i("Dijk, prev:", prev.toString())
+            path = reconstructPath(prev,0,12)
+            Log.i("Dijk, prev:", path.toString())
         }
+
+//        getObstacleCoords(60.0f,70.0f)
     }
 
     private val NUM_X_CELLS: Int = 6
@@ -104,12 +109,12 @@ class MapActivity : AppCompatActivity(){
 
     // Dijkstra's for path planning
     private fun setUpDijkstras(graph: Array<IntArray>): Array<IntArray>{
-        for(j in 0..NUM_Y_CELLS) {
-            for(i in 0..NUM_X_CELLS){
+        for(j in 0..NUM_Y_CELLS-1) {
+            for(i in 0..NUM_X_CELLS-1){
                 graph[j][i] = 1
             }
-            graph[0][0] = 0
         }
+        graph[0][0] = 0
         return graph
     }
 
@@ -132,28 +137,30 @@ class MapActivity : AppCompatActivity(){
         return(j*NUM_X_CELLS + i)
     }
 
-    private fun isNotEmpty(arr: MutableList<Int>, len: Int): Boolean{
-        for(i in 0..len) {
-            if (arr[i] >= 0) {
-                return (true)
-            }
-        }
-        return(false)
-    }
+//    private fun isNotEmpty(arr: MutableList<Int>, len: Int): Boolean{
+//        for(i in 0..len) {
+//            if (arr[i] >= 0) {
+//                return (true)
+//            }
+//        }
+//        return(false)
+//    }
 
-    private fun getMinIndex(arr: MutableList<Int>, len: Int): Int{
-        var minIndex = 0
-        for(i in 0..len){
-            if(arr[i] < 0 || (arr[i] < arr[minIndex] && arr[i] >= 0)){
-                minIndex = i
-            }
-        }
-        if(arr[minIndex] == -1){
-            return -1
-        }
-        return minIndex
-
-    }
+//    private fun getMinIndex(arr: MutableList<Int>, len: Int): Int{
+//        var minIndex = 0
+//        Log.i("Dijk, arr",arr.toString())
+//        for(i in 0..len-1){
+//            if((arr[i] < arr[minIndex] && arr[i] >= 0)){
+//                Log.i("Dijk, minIndex",i.toString())
+//                minIndex = i
+//            }
+//        }
+//        if(arr[minIndex] == -1){
+//            return -1
+//        }
+//        return minIndex
+//
+//    }
 
     private fun getTravelCost(graph: Array<IntArray>, vertexSource: Int, vertexDest: Int): Int {
         val areNeighboring: Boolean
@@ -166,17 +173,23 @@ class MapActivity : AppCompatActivity(){
         if(!sOk!!){
             return(255)
         }
-        if(!dOk!!){
-            return(255)
+        if(!dOk!!) {
+            return (255)
         }
 
-        val sI: Int? = s.get(2) as? Int
-        val dI: Int? = d.get(2) as? Int
+        val sI: Int? = s.get(1) as? Int
+        val dI: Int? = d.get(1) as? Int
 
-        val sJ: Int? = s.get(3) as? Int
-        val dJ: Int? = d.get(3) as? Int
+        val sJ: Int? = s.get(2) as? Int
+        val dJ: Int? = d.get(2) as? Int
 
-        areNeighboring = (abs(sI!!-dI!!)+ abs(sJ!!-dJ!!) <= 1)
+        Log.i("Dijk, si/j", Pair(sI,sJ).toString())
+        Log.i("Dijk, di/j", Pair(dI,dJ).toString())
+
+        areNeighboring = (abs(sI!!-dI!!) + abs(sJ!!-dJ!!) <= 1)
+
+        Log.i("Dijk, neigh", areNeighboring.toString())
+        Log.i("Dijk, ret", graph[dJ][dI].toString())
 
         if(graph[dJ][dI] == 0){
             return 255
@@ -190,45 +203,51 @@ class MapActivity : AppCompatActivity(){
     }
 
     private fun runDijkstras(graph: Array<IntArray>, sourceVertex: Int): MutableList<Int>{
-        val q_cost: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
+        val q_cost: Queue<Int> = ArrayDeque<Int>()
         val dist: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
         val prev: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
 
         var currentVertex: Int = -1
-        var currentCost: Int = -1
         var travelCost: Int = -1
         var minIndex: Int = -1
 
-        for(j in 0..NUM_Y_CELLS*NUM_X_CELLS) {
-            q_cost[j] = -1
+        for(j in 0..NUM_Y_CELLS*NUM_X_CELLS-1) {
             dist[j] = 255
             prev[j] = -1
+            q_cost.add(j)
         }
         dist[sourceVertex] = 0
-        q_cost[sourceVertex] = 0
 
-        while(isNotEmpty(q_cost,NUM_Y_CELLS*NUM_X_CELLS)) {
-            minIndex = getMinIndex(q_cost, NUM_Y_CELLS*NUM_X_CELLS)
+        while(!q_cost.isEmpty()) {
+            minIndex = q_cost.min()!!
+            Log.i("Dijk, min", minIndex.toString())
             if(minIndex < 0){
                 break
             }
             currentVertex = minIndex
-            currentCost = q_cost[currentVertex]
-            q_cost[currentVertex] = -1
-            for (i in 0..NUM_Y_CELLS*NUM_X_CELLS) {
+            q_cost.remove(minIndex)
+
+            // Check neighbors
+            for (i in 0..NUM_Y_CELLS*NUM_X_CELLS-1) {
                 var alt: Int = -1
                 travelCost = getTravelCost(graph, currentVertex, i)
+                Log.i("Dijk, travel", travelCost.toString())
                 if (travelCost == 255) {
                     continue
                 }
                 alt = dist[currentVertex] + travelCost
+                Log.i("Dijk, alt",alt.toString())
                 if(alt < dist[i]){
                     dist[i] = alt
-                    q_cost[i] = alt
+                    Log.i("Dijk, dist",dist.toString())
+                    Log.i("Dijk, i",i.toString())
+                    Log.i("Dijk, qcost",q_cost.toString())
                     prev[i] = currentVertex
                 }
             }
         }
+        Log.i("Dijk, dist",dist.toString())
+        Log.i("Dijk, qcost",q_cost.toString())
         return(prev)
     }
 
@@ -241,11 +260,13 @@ class MapActivity : AppCompatActivity(){
             path[lastIndex++] = lastVertex
             lastVertex = prev[lastVertex]
         }
+        Log.i("Dijk, path", path.toString())
         var finalPath = MutableList(lastIndex+1) { 0 }
-        for(i in 0..lastIndex){
+        for(i in 0..lastIndex-1){
             finalPath[i] = path[lastIndex-1-i]
         }
         finalPath[lastIndex] = -1
+
         return finalPath
     }
 
@@ -369,11 +390,16 @@ class MapActivity : AppCompatActivity(){
     }
 
     // function to draw an obstacle once we have found them
-    private fun drawObstacle(){
-
-    }
-
-
+//    private fun drawObstacle(xbias: Float, ybias: Float){
+//        val obstacleParams = obstacleImageView.layoutParams as ConstraintLayout.LayoutParams
+//        obstacleParams.horizontalBias = xbias
+//        obstacleParams.verticalBias = ybias
+//        obstacleImageView.layoutParams = obstacleParams
+//    }
+//
+//    private fun getObstacleCoords(x: Float, y: Float){
+//        drawObstacle(x, y)
+//    }
 
 
 }

@@ -5,6 +5,7 @@
     <item
         android:id="@+id/tab1"
         android:icon="@drawable/iconfinder_home"
+        android:iconTint="#ffffff"
         android:title="@string/tab1" />
 
     <item

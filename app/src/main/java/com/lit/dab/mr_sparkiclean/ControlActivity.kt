@@ -15,6 +15,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.control_layout.*
 import java.io.IOException
@@ -81,11 +82,6 @@ class ControlActivity: AppCompatActivity(){
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         ConnectToDevice(this).execute()
-        control_test_send_1.setOnClickListener {
-            sendCommand("0.5000.500") // making it a limit of 5 chars to send per coordinate so 10 in total, 1/2 is x coord, 1/2 is y coord
-            val resp = receiveResponse()
-        }
-        control_test_send_2.setOnClickListener { disconnect() }
         // Clean button pressed, go to map activity
         control_led_disconnect.setOnClickListener {
             val toMap = Intent(this, MapActivity::class.java)
@@ -183,6 +179,7 @@ class ControlActivity: AppCompatActivity(){
     fun takeDirtyPhoto(view: View) {
         val intent = Intent(this, camera::class.java)
         startActivityForResult(intent, REQUEST_DIRTY)
+        disconnect()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
