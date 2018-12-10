@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.graphics.Matrix
 import android.os.AsyncTask
 import android.os.Bundle
@@ -191,24 +192,22 @@ class ControlActivity: AppCompatActivity(){
     }
 
     private fun processPhoto(image: Bitmap) {
-        val pixels = IntArray(image.height * image.width)
-        image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
-        mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
-        mapBlack = getBlobCoordsByColor(110, Color.parseColor("black"), image, "all")
         mapGreen = getBlobCoordsByColor(110, Color.parseColor("green"), image, "all")
+        mapBlack = getBlobCoordsByColor(60, Color.parseColor("black"), image, "all")
+        mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
         mapBlue = getBlobCoordsByColor(110, Color.parseColor("blue"), image, "all")
 
-        for (i in mapRed) {
-            Log.d("Red Index: ", i.toString())
+        for (r in mapRed) {
+            Log.d("Red Index: ", r.toString())
         }
-        for (i in mapBlack) {
-            Log.d("Black Index: ", i.toString())
+        for (b in mapBlack) {
+            Log.d("Black Index: ", b.toString())
         }
-        for (i in mapGreen) {
-            Log.d("Green Index: ", i.toString())
+        for (g in mapGreen) {
+            Log.d("Green Index: ", g.toString())
         }
-        for (i in mapBlue) {
-            Log.d("Blue Index: ", i.toString())
+        for (bl in mapBlue) {
+            Log.d("Blue Index: ", bl.toString())
         }
 
     }
@@ -258,7 +257,6 @@ class ControlActivity: AppCompatActivity(){
 
         for (i in filteredPixels.indices) {
             if (filteredPixels[i] != 0) {
-                Log.d(":", "Adding blob...")
                 val currentBlob = ArrayList<Int>()
                 currentBlob.add(i)
                 val x = i % width
@@ -422,12 +420,7 @@ class ControlActivity: AppCompatActivity(){
     private fun getBlob(x: Int, y: Int, width: Int, pixels: IntArray, blob: ArrayList<Int>) {
         val idx = x + y * width
 
-        Log.d("X", x.toString())
-        Log.d("Y", y.toString())
-        Log.d(":", "---------")
-
         if (blob.size > 290) {
-            Log.d("ERR", "Blob size too large, stopping recursion...")
             return
         }
 
@@ -447,12 +440,7 @@ class ControlActivity: AppCompatActivity(){
     }
 
     private fun mergeBlobs(merge: ArrayList<Pair<Int, Int>>, blobs: ArrayList<ArrayList<Int>>, width: Int, height: Int) {
-        Log.d("length of merge: ", merge.size.toString())
-        for (pair in merge) {
-            Log.d("--------", "-------------")
-            Log.d("b1", pair.first.toString())
-            Log.d("b2", pair.second.toString())
-        }
+
         if (merge.size == 0) {
             return
         } else {
@@ -479,16 +467,14 @@ class ControlActivity: AppCompatActivity(){
                 newBlobs.add(newBlob)
             }
 
-            Log.d("length of blobs, b4: ", blobs.size.toString())
 
             blobs.removeAll(remove)
             blobs.addAll(newBlobs)
 
-            Log.d("length of blobs, af: ", blobs.size.toString())
 
             merge.clear()
 
-            val thresh = 15
+            val thresh = 10
             for (i in blobs.indices) {
                 val blob1 = blobs[i]
                 var maxX = 0
