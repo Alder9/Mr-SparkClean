@@ -192,10 +192,10 @@ class ControlActivity: AppCompatActivity(){
     }
 
     private fun processPhoto(image: Bitmap) {
-        mapGreen = getBlobCoordsByColor(110, Color.parseColor("green"), image, "all")
-        mapBlack = getBlobCoordsByColor(60, Color.parseColor("black"), image, "all")
-        mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
         mapBlue = getBlobCoordsByColor(110, Color.parseColor("blue"), image, "all")
+        mapBlack = getBlobCoordsByColor(55, Color.parseColor("black"), image, "all")
+        mapGreen = getBlobCoordsByColor(120, Color.parseColor("green"), image, "all")
+        mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
 
         for (r in mapRed) {
             Log.d("Red Index: ", r.toString())
