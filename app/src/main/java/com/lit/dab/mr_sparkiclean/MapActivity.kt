@@ -26,6 +26,7 @@ import java.lang.Exception
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import javax.xml.transform.Result
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class MapActivity : AppCompatActivity(){
@@ -34,6 +35,9 @@ class MapActivity : AppCompatActivity(){
     lateinit var obstacleImageView: ImageView
     lateinit var mTextView: TextView
     lateinit var mButton: Button
+
+    var currentIndex: Int = -1
+
 
     companion object {
         lateinit var m_address: String
@@ -83,8 +87,6 @@ class MapActivity : AppCompatActivity(){
         }
 
         mButton.setOnClickListener {
-//            sendPath()
-//            runDijkstras()
             val prev: MutableList<Int>
             val path: MutableList<Int>
             setUpDijkstras(tempGraph)
@@ -94,6 +96,23 @@ class MapActivity : AppCompatActivity(){
             Log.i("Dijk, prev:", prev.toString())
             path = reconstructPath(prev,0,12)
             Log.i("Dijk, prev:", path.toString())
+            val xyPath: MutableList<Pair<Float, Float>> = ArrayList()
+            for(i in path.indices){
+                if(path[i] != -1){
+                    val ind = vertex_index_to_ij_coordinates(path[i])
+                    val ii: Int? = ind.get(1) as? Int
+                    val jj: Int? = ind.get(2) as? Int
+                    val xypair = ij_to_xy(ii!!,jj!!)
+                    Log.i("Dijk, i", ii.toString())
+                    Log.i("Dijk, j", jj.toString())
+                    Log.i("Dijk, pair", xypair.toString())
+                    xyPath.add(xypair)
+
+                }
+            }
+            Log.i("Dijk, path", xyPath.toString())
+            sendPath(xyPath)
+
         }
 
 //        getObstacleCoords(60.0f,70.0f)
@@ -116,6 +135,13 @@ class MapActivity : AppCompatActivity(){
         }
         graph[0][0] = 0
         return graph
+    }
+
+    private fun ij_to_xy(i: Int, j: Int): Pair<Float, Float> {
+        val x: Float = ((i) * (0.72) / NUM_X_CELLS).toFloat()
+        val y: Float = ((j) * (0.48) / NUM_Y_CELLS).toFloat()
+
+        return Pair(x,y)
     }
 
     private fun vertex_index_to_ij_coordinates(vertexIndex: Int): List<Any>{
@@ -289,19 +315,23 @@ class MapActivity : AppCompatActivity(){
     }
 
     private fun findBin(graph: Array<IntArray>, bins: MutableList<Pair<Int,Boolean>>, sourceVertex: Int): Int{
-        for(i in bins){
-            if(i.second){
-                return i.first
+        for(i in bins.indices){
+            if(bins[i].second){
+                var newBin = Pair(bins[i].first, false)
+                bins.remove(bins[i])
+                bins.add(i,newBin)
+
+                return bins[i].first
             }
         }
         return 0
     }
 
-    val temp = listOf(Pair(0.5F, 0.5F), Pair(0.7F, 0.7F))
     var busy = false
     var index = 0
 
-    private fun sendPath() {
+    private fun sendPath(temp: MutableList<Pair<Float,Float>>) {
+        Log.i("Dijk, send", "Now Sending!!")
         if(index == temp.size){
             index = 0
             return
@@ -317,7 +347,7 @@ class MapActivity : AppCompatActivity(){
             job.await()
         }
         index++
-        sendPath()
+        sendPath(temp)
     }
 
     private fun sendCoordinateAndUpdateSparki(x: Float, y: Float) {
