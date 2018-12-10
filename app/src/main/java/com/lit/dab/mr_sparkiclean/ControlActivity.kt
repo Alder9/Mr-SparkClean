@@ -24,9 +24,12 @@ import kotlin.collections.ArrayList
 
 class ControlActivity: AppCompatActivity(){
 
+    public var mapRed: ArrayList<Int> = ArrayList()
+    public var mapBlack: ArrayList<Int> = ArrayList()
+    public var mapBlue: ArrayList<Int> = ArrayList()
+    public var mapGreen: ArrayList<Int> = ArrayList()
 
-    private val REQUEST_CLEAN = 1
-    private val REQUEST_DIRTY = 2
+
 
     companion object {
         var m_myUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
@@ -83,13 +86,22 @@ class ControlActivity: AppCompatActivity(){
 
         ConnectToDevice(this).execute()
         // Clean button pressed, go to map activity
-        control_led_disconnect.setOnClickListener {
+        clean.setOnClickListener {
             val toMap = Intent(this, MapActivity::class.java)
             isCleaning = "cleaning"
             toMap.putExtra(m_address, m_address)
             toMap.putExtra(isCleaning, isCleaning)
+            toMap.putExtra("redArrayList", mapRed)
+            toMap.putExtra("blackArrayList", mapBlack)
+            toMap.putExtra("greenArrayList", mapGreen)
+            toMap.putExtra("blueArrayList", mapBlue)
             startActivity(toMap)
             overridePendingTransition(0,0)
+        }
+
+        takePic.setOnClickListener {
+            val intent = Intent(this, camera::class.java)
+            startActivityForResult(intent, 1)
         }
     }
 
@@ -171,43 +183,37 @@ class ControlActivity: AppCompatActivity(){
         }
     }
 
-    fun takeCleanPhoto(view: View) {
-        val intent = Intent(this, camera::class.java)
-        startActivityForResult(intent, REQUEST_CLEAN)
-    }
-
-    fun takeDirtyPhoto(view: View) {
-        val intent = Intent(this, camera::class.java)
-        startActivityForResult(intent, REQUEST_DIRTY)
-        disconnect()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
-            val blobsByColor: ArrayList<ArrayList<Int>> = ArrayList()
-            when (requestCode) {
-                REQUEST_CLEAN -> {
-                    val bitmapImg = data?.extras?.get("img") as Bitmap
-                    processPhoto("Clean", bitmapImg)
-                }
-                REQUEST_DIRTY -> {
-                    val bitmapImg = data?.extras?.get("img") as Bitmap
-                    processPhoto("Dirty", bitmapImg)
-                }
-            }
+            val bitmapImg = data?.extras?.get("img") as Bitmap
+            processPhoto(bitmapImg)
         }
     }
 
-    private fun processPhoto(method: String, image: Bitmap) {
+    private fun processPhoto(image: Bitmap) {
         val pixels = IntArray(image.height * image.width)
         image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
-        val blobIndices = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all", method)
-        for (i in blobIndices) {
-            Log.d("Index: ", i.toString())
+        mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
+        mapBlack = getBlobCoordsByColor(110, Color.parseColor("black"), image, "all")
+        mapGreen = getBlobCoordsByColor(110, Color.parseColor("green"), image, "all")
+        mapBlue = getBlobCoordsByColor(110, Color.parseColor("blue"), image, "all")
+
+        for (i in mapRed) {
+            Log.d("Red Index: ", i.toString())
         }
+        for (i in mapBlack) {
+            Log.d("Black Index: ", i.toString())
+        }
+        for (i in mapGreen) {
+            Log.d("Green Index: ", i.toString())
+        }
+        for (i in mapBlue) {
+            Log.d("Blue Index: ", i.toString())
+        }
+
     }
 
-    private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String, method: String): ArrayList<Int> {
+    private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String): ArrayList<Int> {
         val width = image.width
         val height = image.height
         val pixels = IntArray(width * height)

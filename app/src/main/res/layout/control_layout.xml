@@ -45,7 +45,7 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/takeClean"
+            android:id="@+id/takePic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -54,24 +54,6 @@
             android:onClick="takeCleanPhoto"/>
 
 
-        <TextView
-            android:id="@+id/secondExplain"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="@string/obstacleExplain"
-            android:textSize="30sp" />
-
-
-        <Button
-            android:id="@+id/takeObstacle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Obstacle Picture"
-            android:textSize="25dp"
-            android:onClick="takeDirtyPhoto"/>
         <ImageView
             android:id="@+id/photo"
             android:layout_width="match_parent"
@@ -80,7 +62,7 @@
             android:src="@mipmap/ic_launcher" />
 
         <Button
-            android:id="@+id/control_led_disconnect"
+            android:id="@+id/clean"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
