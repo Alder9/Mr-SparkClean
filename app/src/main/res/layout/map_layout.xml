@@ -39,10 +39,9 @@
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"/>
 
     <ImageView
-        android:id="@+id/obstacle"
+        android:id="@+id/obstacle1"
         android:layout_width="66.6dp"
         android:layout_height="66.6dp"
-        android:background="@drawable/obstacle"
         app:layout_constraintBottom_toBottomOf="@+id/map_background"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toLeftOf="@+id/map_background"
@@ -50,6 +49,104 @@
         app:layout_constraintTop_toTopOf="@+id/map_background"
         app:layout_constraintVertical_bias="1.0" />
 
+    <ImageView
+        android:id="@+id/obstacle2"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/obstacle3"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/obstacle4"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/greenObj1"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/greenObj2"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/greenObj3"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/blueObj1"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/blueObj2"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/blueObj3"
+        android:layout_width="66.6dp"
+        android:layout_height="66.6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/map_background"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@+id/map_background"
+        app:layout_constraintRight_toRightOf="@+id/map_background"
+        app:layout_constraintTop_toTopOf="@+id/map_background"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/sparki"

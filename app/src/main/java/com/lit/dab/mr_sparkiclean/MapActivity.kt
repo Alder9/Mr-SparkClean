@@ -30,18 +30,21 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.xml.transform.Result
 import kotlin.collections.ArrayList
 import kotlin.math.abs
+import android.content.Context
+import android.support.constraint.ConstraintSet
+import org.jetbrains.anko.find
 
 class MapActivity : AppCompatActivity(){
 
     lateinit var sparkiImageView: ImageView
     lateinit var mTextView: TextView
     lateinit var mButton: Button
+    lateinit var obstacleImageView: ImageView
+    lateinit var greenImageView: ImageView
+    lateinit var blueImageView: ImageView
 
-    var obstacleImageViews = ArrayList<ImageView>()
     var o = 0
-    var greenImageViews = ArrayList<ImageView>()
     var g = 0
-    var blueImageViews = ArrayList<ImageView>()
     var b = 0
 
     companion object {
@@ -143,10 +146,9 @@ class MapActivity : AppCompatActivity(){
     private fun setUpDijkstras(graph: Array<IntArray>): Array<IntArray>{
         for(j in 0..NUM_Y_CELLS-1) {
             for(i in 0..NUM_X_CELLS-1){
-                graph[j][i] = 1
+                graph[j][i] = 0
             }
         }
-        graph[0][0] = 0
         return graph
     }
 
@@ -183,35 +185,37 @@ class MapActivity : AppCompatActivity(){
         val mapWidth = abs(x1 - x2)
         val mapHeight = abs(y1 - y2)
 
-        for(i in objGreen){
-            val xGrn = i % imgWidth
-            val yGrn = i / imgWidth
-            val iIdx = (xGrn-xP)/(mapWidth) * NUM_X_CELLS
-            val jIdx = (yGrn - yP)/(mapHeight) * NUM_Y_CELLS
-            tempGraph[iIdx][jIdx] = 2
-            drawGreenObj(iIdx, jIdx)
+        if(!objGreen.isEmpty()){
+            for(i in objGreen){
+                val xGrn = i % imgWidth
+                val yGrn = i / imgWidth
+                val iIdx = (xGrn-xP)/(mapWidth) * NUM_X_CELLS
+                val jIdx = (yGrn - yP)/(mapHeight) * NUM_Y_CELLS
+                tempGraph[iIdx][jIdx] = 2
+                drawGreenObj(iIdx, jIdx)
+            }
         }
 
-        for(i in objBlue){
-            val xBlu = i % imgWidth
-            val yBlu = i / imgWidth
-            val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
-            val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
-            tempGraph[iIdx][jIdx] = 2
-            drawBlueObj(iIdx, jIdx)
+        if(!objBlue.isEmpty()){
+            for(i in objBlue){
+                val xBlu = i % imgWidth
+                val yBlu = i / imgWidth
+                val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
+                val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
+                tempGraph[iIdx][jIdx] = 2
+                drawBlueObj(iIdx, jIdx)
+            }
         }
 
-        for(i in obstacles){
-            val xOb = i % imgWidth
-            val yOb = i / imgWidth
-            val iIdx = (xOb-xP)/(mapWidth) * NUM_X_CELLS
-            val jIdx = (yOb - yP)/(mapHeight) * NUM_Y_CELLS
-            tempGraph[iIdx][jIdx] = 1
-            drawObstacle(iIdx, jIdx)
-        }
-
-        for(i in 0..15){
-            Log.d("Graph index:", tempGraph[i].toString())
+        if(!obstacles.isEmpty()){
+            for(i in obstacles){
+                val xOb = i % imgWidth
+                val yOb = i / imgWidth
+                val iIdx = (xOb-xP)/(mapWidth) * NUM_X_CELLS
+                val jIdx = (yOb - yP)/(mapHeight) * NUM_Y_CELLS
+                tempGraph[iIdx][jIdx] = 1
+                drawObstacle(iIdx, jIdx)
+            }
         }
     }
 
@@ -469,45 +473,70 @@ class MapActivity : AppCompatActivity(){
 
     //function to draw an obstacle once we have found them
     private fun drawObstacle(i: Any, j: Any){
-        obstacleImageViews.add(ImageView(this))
+        if(o == 0){
+            obstacleImageView = findViewById(R.id.obstacle1)
+        }else if(o == 1){
+            obstacleImageView = findViewById(R.id.obstacle2)
+        }else if(o == 2){
+            obstacleImageView = findViewById(R.id.obstacle3)
+        }else{
+            obstacleImageView = findViewById(R.id.obstacle4)
+        }
+        val obstacleParams = obstacleImageView.layoutParams as ConstraintLayout.LayoutParams
 
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        mapLayout.addView(obstacleImageViews[i])
+        Log.d("iI: ", iI.toString())
 
-        obstacleImageViews[o].x = iI*66.6F
-        obstacleImageViews[o].y = jI*66.6F
-        obstacleImageViews[o].layoutParams.height = 66
-        obstacleImageViews[o].layoutParams.width = 66
-        obstacleImageViews[o].setBackgroundColor(Color.BLACK)
-
+        obstacleParams.horizontalBias = iI*0.199F
+        obstacleParams.verticalBias = jI*0.335F
+        obstacleImageView.setBackgroundResource(R.drawable.obstacle)
+        obstacleImageView.layoutParams = obstacleParams
         o++
     }
 
     private fun drawBlueObj(i: Any, j: Any){
+        if(b == 0){
+            blueImageView = findViewById(R.id.blueObj1)
+        }else if(b == 1){
+            blueImageView = findViewById(R.id.blueObj2)
+        }else{
+            blueImageView = findViewById(R.id.blueObj3)
+        }
+        val blueParams = blueImageView.layoutParams as ConstraintLayout.LayoutParams
+
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        blueImageViews[b].x = iI*66.6F
-        blueImageViews[b].y = jI*66.6F
-        blueImageViews[b].layoutParams.height = 66
-        obstacleImageViews[b].layoutParams.width = 66
-        obstacleImageViews[b].setBackgroundColor(Color.BLUE)
+        Log.d("iI: ", iI.toString())
 
+        blueParams.horizontalBias = iI*0.199F
+        blueParams.verticalBias = jI*0.335F
+        blueImageView.setBackgroundResource(R.drawable.blueobj)
+        blueImageView.layoutParams = blueParams
         b++
     }
 
     private fun drawGreenObj(i: Any, j: Any){
+        if(g == 0){
+            greenImageView = findViewById(R.id.greenObj1)
+        }else if(g == 1){
+            greenImageView = findViewById(R.id.greenObj2)
+        }else{
+            greenImageView = findViewById(R.id.greenObj3)
+        }
+        val greenParams = greenImageView.layoutParams as ConstraintLayout.LayoutParams
+
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        greenImageViews[g].x = iI*66.6F
-        greenImageViews[g].y = jI*66.6F
-        greenImageViews[g].layoutParams.height = 66
-        greenImageViews[g].layoutParams.width = 66
-        greenImageViews[g].setBackgroundColor(Color.GREEN)
+        Log.d("iI: ", iI.toString())
 
+        greenParams.horizontalBias = iI*0.199F
+        greenParams.verticalBias = jI*0.335F
+        greenImageView.setBackgroundResource(R.drawable.greenobj)
+        greenImageView.layoutParams = greenParams
         g++
     }
 }
