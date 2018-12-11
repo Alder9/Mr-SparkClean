@@ -177,13 +177,15 @@ class MapActivity : AppCompatActivity(){
 
         val xP = minOf(x1, x2)
         val yP = minOf(y1, y2)
-
+        Log.d("imgwidth: ", imgWidth.toString())
+        Log.d("xp: ", xP.toString())
+        Log.d("yp: ", yP.toString())
         val mapWidth = abs(x1 - x2)
         val mapHeight = abs(y1 - y2)
 
         for(i in objGreen){
-            val xGrn = objGreen[i] % imgWidth
-            val yGrn = objGreen[i] / imgWidth
+            val xGrn = i % imgWidth
+            val yGrn = i / imgWidth
             val iIdx = (xGrn-xP)/(mapWidth) * NUM_X_CELLS
             val jIdx = (yGrn - yP)/(mapHeight) * NUM_Y_CELLS
             tempGraph[iIdx][jIdx] = 2
@@ -191,8 +193,8 @@ class MapActivity : AppCompatActivity(){
         }
 
         for(i in objBlue){
-            val xBlu = objBlue[i] % imgWidth
-            val yBlu = objBlue[i] / imgWidth
+            val xBlu = i % imgWidth
+            val yBlu = i / imgWidth
             val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
             val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
             tempGraph[iIdx][jIdx] = 2
@@ -200,8 +202,8 @@ class MapActivity : AppCompatActivity(){
         }
 
         for(i in obstacles){
-            val xOb = obstacles[i] % imgWidth
-            val yOb = obstacles[i] / imgWidth
+            val xOb = i % imgWidth
+            val yOb = i / imgWidth
             val iIdx = (xOb-xP)/(mapWidth) * NUM_X_CELLS
             val jIdx = (yOb - yP)/(mapHeight) * NUM_Y_CELLS
             tempGraph[iIdx][jIdx] = 1
