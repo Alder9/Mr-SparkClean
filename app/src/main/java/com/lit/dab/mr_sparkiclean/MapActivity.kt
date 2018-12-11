@@ -112,6 +112,7 @@ class MapActivity : AppCompatActivity(){
             Log.i("Dijk, prev:", prev.toString())
             path = reconstructPath(prev,0,12)
             Log.i("Dijk, prev:", path.toString())
+            //pickUpObjs(tempGraph)
         }
 
 //        getObstacleCoords(60.0f,70.0f)
@@ -124,6 +125,19 @@ class MapActivity : AppCompatActivity(){
     // Conversion functions
 
 //    var tempGraph = arrayOf(intArrayOf())
+
+//    private fun pickUpObjs(graph: Array<IntArray>){
+//        var greenMap = ControlActivity.mapGreen
+//        var blueMap = ControlActivity.mapBlue
+//        for(i in greenMap){
+//            //send this i, j to sparki????
+//            reconstructPath(prev)
+//        }
+//
+//        for(i in blueMap){
+//            //send every i, j to sparki
+//        }
+//    }
 
     // Dijkstra's for path planning
     private fun setUpDijkstras(graph: Array<IntArray>): Array<IntArray>{
