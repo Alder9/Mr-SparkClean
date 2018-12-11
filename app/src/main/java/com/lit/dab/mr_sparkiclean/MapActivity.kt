@@ -2,6 +2,7 @@ package com.lit.dab.mr_sparkiclean
 
 import android.animation.FloatEvaluator
 import android.content.Intent
+import android.graphics.Color
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.media.Image
 import android.os.Bundle
@@ -18,6 +19,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_camera.*
+import kotlinx.android.synthetic.main.map_layout.*
 import kotlinx.coroutines.experimental.android.UI
 import java.io.IOException
 import kotlinx.coroutines.*
@@ -28,13 +31,26 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.xml.transform.Result
 import kotlin.collections.ArrayList
 import kotlin.math.abs
+import android.content.Context
+import android.support.constraint.ConstraintSet
+import org.jetbrains.anko.find
 
 class MapActivity : AppCompatActivity(){
 
+    private val NUM_X_CELLS: Int = 6
+    private val NUM_Y_CELLS: Int = 4
+    var tempGraph = Array(NUM_Y_CELLS, {IntArray(NUM_X_CELLS)})
+
     lateinit var sparkiImageView: ImageView
-    lateinit var obstacleImageView: ImageView
     lateinit var mTextView: TextView
     lateinit var mButton: Button
+    lateinit var obstacleImageView: ImageView
+    lateinit var greenImageView: ImageView
+    lateinit var blueImageView: ImageView
+
+    var o = 0
+    var g = 0
+    var b = 0
 
     var currentIndex: Int = -1
 
@@ -76,6 +92,15 @@ class MapActivity : AppCompatActivity(){
         m_address = intent.getStringExtra(ControlActivity.m_address) // get the m_address that ControlActivity is expecting in onCreate()
         isCleaning = intent.getStringExtra(ControlActivity.isCleaning)
 
+        var redMap = ControlActivity.mapRed
+        var blackMap = ControlActivity.mapBlack
+        var greenMap = ControlActivity.mapGreen
+        var blueMap = ControlActivity.mapBlue
+        var imgWidth = ControlActivity.imgWidth
+
+
+        populateMap(redMap, greenMap, blueMap, blackMap, imgWidth)
+
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
@@ -96,6 +121,7 @@ class MapActivity : AppCompatActivity(){
             Log.i("Dijk, prev:", prev.toString())
             path = reconstructPath(prev,0,12)
             Log.i("Dijk, prev:", path.toString())
+
             val xyPath: MutableList<Pair<Float, Float>> = ArrayList()
             for(i in path.indices){
                 if(path[i] != -1){
@@ -113,27 +139,39 @@ class MapActivity : AppCompatActivity(){
             Log.i("Dijk, path", xyPath.toString())
             sendPath(xyPath)
 
+            //pickUpObjs(tempGraph)
         }
 
 //        getObstacleCoords(60.0f,70.0f)
     }
 
-    private val NUM_X_CELLS: Int = 6
-    private val NUM_Y_CELLS: Int = 4
-    var tempGraph = Array(NUM_Y_CELLS, {IntArray(NUM_X_CELLS)})
+
+
 
     // Conversion functions
 
 //    var tempGraph = arrayOf(intArrayOf())
 
+//    private fun pickUpObjs(graph: Array<IntArray>){
+//        var greenMap = ControlActivity.mapGreen
+//        var blueMap = ControlActivity.mapBlue
+//        for(i in greenMap){
+//            //send this i, j to sparki????
+//            reconstructPath(prev)
+//        }
+//
+//        for(i in blueMap){
+//            //send every i, j to sparki
+//        }
+//    }
+
     // Dijkstra's for path planning
     private fun setUpDijkstras(graph: Array<IntArray>): Array<IntArray>{
         for(j in 0..NUM_Y_CELLS-1) {
             for(i in 0..NUM_X_CELLS-1){
-                graph[j][i] = 1
+                graph[j][i] = 0
             }
         }
-        graph[0][0] = 0
         return graph
     }
 
@@ -161,6 +199,60 @@ class MapActivity : AppCompatActivity(){
 
     private fun ij_coordinates_to_vertex_index(i: Int, j: Int): Int{
         return(j*NUM_X_CELLS + i)
+    }
+
+    private fun populateMap(cornerMap: ArrayList<Int>, objGreen: ArrayList<Int>, objBlue: ArrayList<Int>, obstacles: ArrayList<Int>, imgWidth: Int){
+        val x1 = cornerMap[0] % imgWidth
+        val y1 = cornerMap[0] / imgWidth
+        val x2 = cornerMap[1] % imgWidth
+        val y2 = cornerMap[1] / imgWidth
+
+        val xP = minOf(x1, x2)
+        val yP = minOf(y1, y2)
+        Log.d("imgwidth: ", imgWidth.toString())
+        Log.d("xp: ", xP.toString())
+        Log.d("yp: ", yP.toString())
+        val mapWidth = abs(x1 - x2)
+        val mapHeight = abs(y1 - y2)
+
+        if(!objGreen.isEmpty()){
+            for(i in objGreen){
+                val xGrn = i % imgWidth
+                val yGrn = i / imgWidth
+                val iIdx = (xGrn-xP)/(mapWidth) * NUM_X_CELLS
+                val jIdx = (yGrn - yP)/(mapHeight) * NUM_Y_CELLS
+                tempGraph[iIdx][jIdx] = 2
+                drawGreenObj(iIdx, jIdx)
+            }
+        }
+
+        if(!objBlue.isEmpty()){
+            for(i in objBlue){
+                val xBlu = i % imgWidth
+                val yBlu = i / imgWidth
+                val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
+                val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
+                tempGraph[iIdx][jIdx] = 2
+                drawBlueObj(iIdx, jIdx)
+            }
+        }
+
+        if(!obstacles.isEmpty()) {
+            for (i in obstacles) {
+                val xOb = i % imgWidth
+                val yOb = i / imgWidth
+                val iIdx = (xOb - xP) / (mapWidth) * NUM_X_CELLS
+                val jIdx = (yOb - yP) / (mapHeight) * NUM_Y_CELLS
+                tempGraph[iIdx][jIdx] = 1
+                drawObstacle(iIdx, jIdx)
+            }
+        }
+
+        for(i in tempGraph.indices){
+            for(j in tempGraph[i].indices) {
+                Log.d("Graph index:", tempGraph[i][j].toString())
+            }
+        }
     }
 
 //    private fun isNotEmpty(arr: MutableList<Int>, len: Int): Boolean{
@@ -419,17 +511,72 @@ class MapActivity : AppCompatActivity(){
         Log.i("Reponse", xbias.toString())
     }
 
-    // function to draw an obstacle once we have found them
-//    private fun drawObstacle(xbias: Float, ybias: Float){
-//        val obstacleParams = obstacleImageView.layoutParams as ConstraintLayout.LayoutParams
-//        obstacleParams.horizontalBias = xbias
-//        obstacleParams.verticalBias = ybias
-//        obstacleImageView.layoutParams = obstacleParams
-//    }
-//
-//    private fun getObstacleCoords(x: Float, y: Float){
-//        drawObstacle(x, y)
-//    }
+    //function to draw an obstacle once we have found them
+    private fun drawObstacle(i: Any, j: Any){
+        if(o == 0){
+            obstacleImageView = findViewById(R.id.obstacle1)
+        }else if(o == 1){
+            obstacleImageView = findViewById(R.id.obstacle2)
+        }else if(o == 2){
+            obstacleImageView = findViewById(R.id.obstacle3)
+        }else{
+            obstacleImageView = findViewById(R.id.obstacle4)
+        }
+        val obstacleParams = obstacleImageView.layoutParams as ConstraintLayout.LayoutParams
 
+        val iI: Int = i as Int
+        val jI: Int = j as Int
 
+        Log.d("iI: ", iI.toString())
+
+        obstacleParams.horizontalBias = iI*0.199F
+        obstacleParams.verticalBias = jI*0.335F
+        obstacleImageView.setBackgroundResource(R.drawable.obstacle)
+        obstacleImageView.layoutParams = obstacleParams
+        o++
+    }
+
+    private fun drawBlueObj(i: Any, j: Any){
+        if(b == 0){
+            blueImageView = findViewById(R.id.blueObj1)
+        }else if(b == 1){
+            blueImageView = findViewById(R.id.blueObj2)
+        }else{
+            blueImageView = findViewById(R.id.blueObj3)
+        }
+        val blueParams = blueImageView.layoutParams as ConstraintLayout.LayoutParams
+
+        val iI: Int = i as Int
+        val jI: Int = j as Int
+
+        Log.d("iI: ", iI.toString())
+
+        blueParams.horizontalBias = iI*0.199F
+        blueParams.verticalBias = jI*0.335F
+        blueImageView.setBackgroundResource(R.drawable.blueobj)
+        blueImageView.layoutParams = blueParams
+        b++
+    }
+
+    private fun drawGreenObj(i: Any, j: Any){
+        if(g == 0){
+            greenImageView = findViewById(R.id.greenObj1)
+        }else if(g == 1){
+            greenImageView = findViewById(R.id.greenObj2)
+        }else{
+            greenImageView = findViewById(R.id.greenObj3)
+        }
+        val greenParams = greenImageView.layoutParams as ConstraintLayout.LayoutParams
+
+        val iI: Int = i as Int
+        val jI: Int = j as Int
+
+        Log.d("iI: ", iI.toString())
+
+        greenParams.horizontalBias = iI*0.199F
+        greenParams.verticalBias = jI*0.335F
+        greenImageView.setBackgroundResource(R.drawable.greenobj)
+        greenImageView.layoutParams = greenParams
+        g++
+    }
 }

@@ -25,12 +25,6 @@ import kotlin.collections.ArrayList
 
 class ControlActivity: AppCompatActivity(){
 
-    public var mapRed: ArrayList<Int> = ArrayList()
-    public var mapBlack: ArrayList<Int> = ArrayList()
-    public var mapBlue: ArrayList<Int> = ArrayList()
-    public var mapGreen: ArrayList<Int> = ArrayList()
-
-
 
     companion object {
         var m_myUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
@@ -40,6 +34,11 @@ class ControlActivity: AppCompatActivity(){
         var m_isConnected: Boolean = false
         lateinit var isCleaning: String
         lateinit var m_address: String
+        public var mapRed: ArrayList<Int> = ArrayList()
+        public var mapBlack: ArrayList<Int> = ArrayList()
+        public var mapBlue: ArrayList<Int> = ArrayList()
+        public var mapGreen: ArrayList<Int> = ArrayList()
+        public var imgWidth: Int = 0
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -92,10 +91,6 @@ class ControlActivity: AppCompatActivity(){
             isCleaning = "cleaning"
             toMap.putExtra(m_address, m_address)
             toMap.putExtra(isCleaning, isCleaning)
-            toMap.putExtra("redArrayList", mapRed)
-            toMap.putExtra("blackArrayList", mapBlack)
-            toMap.putExtra("greenArrayList", mapGreen)
-            toMap.putExtra("blueArrayList", mapBlue)
             startActivity(toMap)
             overridePendingTransition(0,0)
         }
@@ -192,10 +187,13 @@ class ControlActivity: AppCompatActivity(){
     }
 
     private fun processPhoto(image: Bitmap) {
-        mapBlue = getBlobCoordsByColor(110, Color.parseColor("blue"), image, "all")
-        mapBlack = getBlobCoordsByColor(55, Color.parseColor("black"), image, "all")
-        mapGreen = getBlobCoordsByColor(120, Color.parseColor("green"), image, "all")
+        imgWidth = image.width
+        val pixels = IntArray(image.height * image.width)
+        image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
         mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
+        mapBlack = getBlobCoordsByColor(110, Color.parseColor("black"), image, "all")
+        mapBlue = getBlobCoordsByColor(130, Color.parseColor("blue"), image, "all")
+        mapGreen = getBlobCoordsByColor(135, Color.parseColor("green"), image, "all")
 
         for (r in mapRed) {
             Log.d("Red Index: ", r.toString())
