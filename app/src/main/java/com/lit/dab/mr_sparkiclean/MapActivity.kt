@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.map_layout.*
 import kotlinx.coroutines.experimental.android.UI
 import java.io.IOException
@@ -32,6 +33,10 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class MapActivity : AppCompatActivity(){
+
+    private val NUM_X_CELLS: Int = 6
+    private val NUM_Y_CELLS: Int = 4
+    var tempGraph = Array(NUM_Y_CELLS, {IntArray(NUM_X_CELLS)})
 
     lateinit var sparkiImageView: ImageView
     lateinit var mTextView: TextView
@@ -118,9 +123,8 @@ class MapActivity : AppCompatActivity(){
 //        getObstacleCoords(60.0f,70.0f)
     }
 
-    private val NUM_X_CELLS: Int = 6
-    private val NUM_Y_CELLS: Int = 4
-    var tempGraph = Array(NUM_Y_CELLS, {IntArray(NUM_X_CELLS)})
+
+
 
     // Conversion functions
 
@@ -192,26 +196,28 @@ class MapActivity : AppCompatActivity(){
             drawGreenObj(iIdx, jIdx)
         }
 
-        for(i in objBlue){
-            val xBlu = i % imgWidth
-            val yBlu = i / imgWidth
-            val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
-            val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
-            tempGraph[iIdx][jIdx] = 2
-            drawBlueObj(iIdx, jIdx)
-        }
+//        for(i in objBlue ){
+//            val xBlu = i % imgWidth
+//            val yBlu = i / imgWidth
+//            val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
+//            val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
+//            tempGraph[iIdx][jIdx] = 2
+//            drawBlueObj(iIdx, jIdx)
+//        }
 
-        for(i in obstacles){
-            val xOb = i % imgWidth
-            val yOb = i / imgWidth
-            val iIdx = (xOb-xP)/(mapWidth) * NUM_X_CELLS
-            val jIdx = (yOb - yP)/(mapHeight) * NUM_Y_CELLS
-            tempGraph[iIdx][jIdx] = 1
-            drawObstacle(iIdx, jIdx)
-        }
+//        for(i in obstacles){
+//            val xOb = i % imgWidth
+//            val yOb = i / imgWidth
+//            val iIdx = (xOb-xP)/(mapWidth) * NUM_X_CELLS
+//            val jIdx = (yOb - yP)/(mapHeight) * NUM_Y_CELLS
+//            tempGraph[iIdx][jIdx] = 1
+//            drawObstacle(iIdx, jIdx)
+//        }
 
-        for(i in 0..15){
-            Log.d("Graph index:", tempGraph[i].toString())
+        for(i in tempGraph.indices){
+            for(j in tempGraph[i].indices) {
+                Log.d("Graph index:", tempGraph[i][j].toString())
+            }
         }
     }
 
@@ -501,6 +507,9 @@ class MapActivity : AppCompatActivity(){
     private fun drawGreenObj(i: Any, j: Any){
         val iI: Int = i as Int
         val jI: Int = j as Int
+        greenImageViews.add(ImageView(this))
+
+        mapLayout.addView(greenImageViews[g])
 
         greenImageViews[g].x = iI*66.6F
         greenImageViews[g].y = jI*66.6F
