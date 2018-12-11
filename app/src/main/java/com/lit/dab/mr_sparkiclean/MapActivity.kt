@@ -486,10 +486,12 @@ class MapActivity : AppCompatActivity(){
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        greenImageViews[b].x = iI*66.6F
-        greenImageViews[b].y = jI*66.6F
-        greenImageViews[b].layoutParams.height = 66
-        greenImageViews[b].layoutParams.width = 66
-        greenImageViews[b].setBackgroundColor(Color.GREEN)
+        greenImageViews[g].x = iI*66.6F
+        greenImageViews[g].y = jI*66.6F
+        greenImageViews[g].layoutParams.height = 66
+        greenImageViews[g].layoutParams.width = 66
+        greenImageViews[g].setBackgroundColor(Color.GREEN)
+
+        g++
     }
 }
