@@ -98,9 +98,6 @@ class MapActivity : AppCompatActivity(){
         var blueMap = ControlActivity.mapBlue
         var imgWidth = ControlActivity.imgWidth
 
-
-        populateMap(redMap, greenMap, blueMap, blackMap, imgWidth)
-
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
@@ -139,31 +136,62 @@ class MapActivity : AppCompatActivity(){
             Log.i("Dijk, path", xyPath.toString())
             sendPath(xyPath)
 
-            //pickUpObjs(tempGraph)
+            populateMap(redMap, greenMap, blueMap, blackMap, imgWidth)
+            pickUpObjs(tempGraph)
         }
 
 //        getObstacleCoords(60.0f,70.0f)
     }
 
+    private fun isClean(graph: Array<IntArray>) : Boolean {
+        var objFound = false
+        for (arr in graph) {
+            for (value in arr) {
+                if (value != 0 && value != 1) {
+                    objFound = true
+                }
+            }
+        }
+        if (objFound) {
+            return false
+        }
+        return true
+    }
 
+    private fun getNextObject(graph: Array<IntArray>): Pair<Int, String> {
+        //var greenMap = ControlActivity.mapGreen
+        //var blueMap = ControlActivity.mapBlue
+        //pick an object
 
+        return Pair(-1, "none")
+    }
 
-    // Conversion functions
+    private fun getNextBin(graph: Array<IntArray>, color: String): Int {
+        //Find next open bin
 
-//    var tempGraph = arrayOf(intArrayOf())
+        //Mark this bin as no longer open
 
-//    private fun pickUpObjs(graph: Array<IntArray>){
-//        var greenMap = ControlActivity.mapGreen
-//        var blueMap = ControlActivity.mapBlue
-//        for(i in greenMap){
-//            //send this i, j to sparki????
-//            reconstructPath(prev)
-//        }
-//
-//        for(i in blueMap){
-//            //send every i, j to sparki
-//        }
-//    }
+        //Return bin
+        return -1
+    }
+
+    private fun pickUpObjs(graph: Array<IntArray>){
+        while (!isClean(graph)) {
+            var sourceVertex = -1 //Get sparki's position (world -> map)
+            val prev = runDijkstras(graph, sourceVertex)
+            val obj = getNextObject(graph)
+            val destVertex = obj.first
+            val color = obj.second
+            var path = reconstructPath(prev, sourceVertex, destVertex)
+            var destPose = -1 //(map -> world)
+            //Sparki, GO!
+            sourceVertex = -1 //Need to get this
+            val binVertex = getNextBin(graph, color)
+            path =reconstructPath(prev, sourceVertex, binVertex)
+            destPose = -1 // (map -> world)
+            //Sparki, GO!
+        }
+    }
 
     // Dijkstra's for path planning
     private fun setUpDijkstras(graph: Array<IntArray>): Array<IntArray>{
