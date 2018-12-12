@@ -197,7 +197,6 @@ class MapActivity : AppCompatActivity(){
             val pckLst: MutableList<Any> = mutableListOf(true, i, j)
             return(pckLst)
         }
-
     }
 
     private fun ij_coordinates_to_vertex_index(i: Int, j: Int): Int{
@@ -509,7 +508,6 @@ class MapActivity : AppCompatActivity(){
                 e.printStackTrace()
             }
         }
-
         return responseString
     }
 
