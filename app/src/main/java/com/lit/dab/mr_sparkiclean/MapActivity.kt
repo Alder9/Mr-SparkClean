@@ -30,19 +30,17 @@ import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import javax.xml.transform.Result
 import kotlin.collections.ArrayList
-import kotlin.math.abs
 import android.content.Context
 import android.support.constraint.ConstraintSet
 import org.jetbrains.anko.find
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.roundToInt
+import kotlin.math.*
 
 class MapActivity : AppCompatActivity(){
 
     private val NUM_X_CELLS: Int = 6
     private val NUM_Y_CELLS: Int = 4
     var tempGraph = Array(NUM_Y_CELLS, {IntArray(NUM_X_CELLS)})
+    var counter = 0
 
     lateinit var sparkiImageView: ImageView
     lateinit var mTextView: TextView
@@ -101,9 +99,6 @@ class MapActivity : AppCompatActivity(){
         var blueMap = ControlActivity.mapBlue
         var imgWidth = ControlActivity.imgWidth
 
-
-        populateMap(redMap, greenMap, blueMap, blackMap, imgWidth)
-
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
@@ -114,16 +109,90 @@ class MapActivity : AppCompatActivity(){
             mTextView.setText("Now Cleaning")
         }
 
+        setUpDijkstras(tempGraph)
+        populateMap(redMap, greenMap, blueMap, blackMap, imgWidth)
+
         mButton.setOnClickListener {
-            val prev: MutableList<Int>
-            val path: MutableList<Int>
-            setUpDijkstras(tempGraph)
-            tempGraph[1][0] = 0
-            tempGraph[1][3] = 0
-            prev = runDijkstras(tempGraph,0)
-            Log.i("Dijk, prev:", prev.toString())
-            path = reconstructPath(prev,0,12)
-            Log.i("Dijk, prev:", path.toString())
+            pickUpObjs(tempGraph)
+        }
+
+//        getObstacleCoords(60.0f,70.0f)
+    }
+
+    private fun isClean(graph: Array<IntArray>) : Boolean {
+        var objFound = false
+        for (arr in graph) {
+            for (value in arr) {
+                if (value != 0 && value != 1) {
+                    objFound = true
+                }
+            }
+        }
+        if (objFound) {
+            return false
+        }
+        return true
+    }
+
+    private fun getNextObject(graph: Array<IntArray>): Int {
+        for (y in 0..NUM_Y_CELLS-1) {
+            for (x in 0..NUM_X_CELLS-1) {
+                if (graph[y][x] != 0 && graph[y][x] != 1) {
+                    graph[y][x] = 0
+                    val idx = x + y * NUM_X_CELLS
+                    return idx
+                }
+            }
+        }
+        return 0
+    }
+
+    private fun findBin(graph: Array<IntArray>, bins: MutableList<Pair<Int,Boolean>>, sourceVertex: Int): Int{
+        val i: Int = sourceVertex % NUM_X_CELLS
+        val j: Int = sourceVertex / NUM_X_CELLS
+        val s = ij_to_xy(i,j)
+        var dist: Float
+        var minDist: Pair<Float, Int> = Pair(1000F, 0)
+        for(i in bins.indices){
+            if(bins[i].second) {
+                var k = bins[i].first % NUM_X_CELLS
+                var l = bins[i].first / NUM_X_CELLS
+                val d = ij_to_xy(k, l)
+                dist = sqrt((s.first - d.first).pow(2) + (s.second - d.second).pow(2))
+                if (dist < minDist.first) {
+                    minDist =  Pair(dist, bins[i].first)
+                }
+            }
+        }
+        for(j in bins.indices) {
+            if(bins[i].first == minDist.second) {
+                var newBin = Pair(bins[i].first, false)
+                bins.remove(bins[i])
+                bins.add(i, newBin)
+                return minDist.second
+            }
+        }
+        return 0
+    }
+
+    private fun pickUpObjs(graph: Array<IntArray>){
+        var sourceVertex = 0
+        val bins: MutableList<Pair<Int,Boolean>> = MutableList(0){Pair(0, false)}
+        for (y in 0..NUM_Y_CELLS-1) {
+            for (x in 0..NUM_X_CELLS-1) {
+                if ((y==0 || y == 3) && graph[y][x] == 0) {
+                    //Make new bin
+                    val idx = x + y*NUM_X_CELLS
+                    bins.add(Pair(idx, true))
+                }
+            }
+        }
+
+        while (!isClean(graph)) {
+
+            val destVertex = getNextObject(graph)
+            val prev = runDijkstras(graph, sourceVertex)
+            var path = reconstructPath(prev, sourceVertex, destVertex)
 
             val xyPath: MutableList<Pair<Float, Float>> = ArrayList()
             for(i in path.indices){
@@ -132,41 +201,51 @@ class MapActivity : AppCompatActivity(){
                     val ii: Int? = ind.get(1) as? Int
                     val jj: Int? = ind.get(2) as? Int
                     val xypair = ij_to_xy(ii!!,jj!!)
-                    Log.i("Dijk, i", ii.toString())
-                    Log.i("Dijk, j", jj.toString())
-                    Log.i("Dijk, pair", xypair.toString())
+                    //Log.i("Dijk, i", ii.toString())
+                    //Log.i("Dijk, j", jj.toString())
+                    //Log.i("Dijk, pair", xypair.toString())
                     xyPath.add(xypair)
 
                 }
             }
             Log.i("Dijk, path", xyPath.toString())
-            sendPath(xyPath)
 
-            //pickUpObjs(tempGraph)
+            runBlocking{
+                val job = async {sendPath(xyPath)}
+                job.await()
+                Log.d("1:","first")
+            }
+            Log.d("2:","second")
+
+            sourceVertex = destVertex
+            val binVertex = findBin(graph, bins, sourceVertex)
+            path = reconstructPath(prev, sourceVertex, binVertex)
+            val xyPath2: MutableList<Pair<Float, Float>> = ArrayList()
+            for(i in path.indices){
+                if(path[i] != -1){
+                    val ind = vertex_index_to_ij_coordinates(path[i])
+                    val ii: Int? = ind.get(1) as? Int
+                    val jj: Int? = ind.get(2) as? Int
+                    val xypair = ij_to_xy(ii!!,jj!!)
+                    //Log.i("Dijk, i", ii.toString())
+                    //Log.i("Dijk, j", jj.toString())
+                    //Log.i("Dijk, pair", xypair.toString())
+                    xyPath2.add(xypair)
+
+                }
+            }
+            Log.i("Dijk, path", xyPath.toString())
+
+            runBlocking {
+                val job = async {sendPath(xyPath2)}
+                job.await()
+                Log.d("1:","first")
+            }
+            Log.d("2:","second")
+
+            sourceVertex = binVertex
         }
-
-//        getObstacleCoords(60.0f,70.0f)
     }
-
-
-
-
-    // Conversion functions
-
-//    var tempGraph = arrayOf(intArrayOf())
-
-//    private fun pickUpObjs(graph: Array<IntArray>){
-//        var greenMap = ControlActivity.mapGreen
-//        var blueMap = ControlActivity.mapBlue
-//        for(i in greenMap){
-//            //send this i, j to sparki????
-//            reconstructPath(prev)
-//        }
-//
-//        for(i in blueMap){
-//            //send every i, j to sparki
-//        }
-//    }
 
     // Dijkstra's for path planning
     private fun setUpDijkstras(graph: Array<IntArray>): Array<IntArray>{
@@ -313,15 +392,15 @@ class MapActivity : AppCompatActivity(){
         val sJ: Int? = s.get(2) as? Int
         val dJ: Int? = d.get(2) as? Int
 
-        Log.i("Dijk, si/j", Pair(sI,sJ).toString())
-        Log.i("Dijk, di/j", Pair(dI,dJ).toString())
+        //Log.i("Dijk, si/j", Pair(sI,sJ).toString())
+        //Log.i("Dijk, di/j", Pair(dI,dJ).toString())
 
         areNeighboring = (abs(sI!!-dI!!) + abs(sJ!!-dJ!!) <= 1)
 
-        Log.i("Dijk, neigh", areNeighboring.toString())
-        Log.i("Dijk, ret", graph[dJ][dI].toString())
+        //Log.i("Dijk, neigh", areNeighboring.toString())
+        //Log.i("Dijk, ret", graph[dJ][dI].toString())
 
-        if(graph[dJ][dI] == 0){
+        if(graph[dJ][dI] != 0){
             return 255
         }
         if(areNeighboring){
@@ -350,7 +429,7 @@ class MapActivity : AppCompatActivity(){
 
         while(!q_cost.isEmpty()) {
             minIndex = q_cost.min()!!
-            Log.i("Dijk, min", minIndex.toString())
+            //Log.i("Dijk, min", minIndex.toString())
             if(minIndex < 0){
                 break
             }
@@ -361,23 +440,23 @@ class MapActivity : AppCompatActivity(){
             for (i in 0..NUM_Y_CELLS*NUM_X_CELLS-1) {
                 var alt: Int = -1
                 travelCost = getTravelCost(graph, currentVertex, i)
-                Log.i("Dijk, travel", travelCost.toString())
+                //Log.i("Dijk, travel", travelCost.toString())
                 if (travelCost == 255) {
                     continue
                 }
                 alt = dist[currentVertex] + travelCost
-                Log.i("Dijk, alt",alt.toString())
+                // Log.i("Dijk, alt",alt.toString())
                 if(alt < dist[i]){
                     dist[i] = alt
-                    Log.i("Dijk, dist",dist.toString())
-                    Log.i("Dijk, i",i.toString())
-                    Log.i("Dijk, qcost",q_cost.toString())
+                    //Log.i("Dijk, dist",dist.toString())
+                    //Log.i("Dijk, i",i.toString())
+                    //Log.i("Dijk, qcost",q_cost.toString())
                     prev[i] = currentVertex
                 }
             }
         }
-        Log.i("Dijk, dist",dist.toString())
-        Log.i("Dijk, qcost",q_cost.toString())
+        //Log.i("Dijk, dist",dist.toString())
+        //Log.i("Dijk, qcost",q_cost.toString())
         return(prev)
     }
 
@@ -416,19 +495,6 @@ class MapActivity : AppCompatActivity(){
         bins.add(bin6)
 
         return bins
-    }
-
-    private fun findBin(graph: Array<IntArray>, bins: MutableList<Pair<Int,Boolean>>, sourceVertex: Int): Int{
-        for(i in bins.indices){
-            if(bins[i].second){
-                var newBin = Pair(bins[i].first, false)
-                bins.remove(bins[i])
-                bins.add(i,newBin)
-
-                return bins[i].first
-            }
-        }
-        return 0
     }
 
     var busy = false
@@ -475,6 +541,7 @@ class MapActivity : AppCompatActivity(){
 
                 if(result == "97"){
                     setSparkiMapPose(x,1-y)
+                    counter += 1
                 }
             }
             catch (e: Exception){
