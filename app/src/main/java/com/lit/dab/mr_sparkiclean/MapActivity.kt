@@ -49,11 +49,11 @@ class MapActivity : AppCompatActivity(){
     lateinit var greenImageView: ImageView
     lateinit var blueImageView: ImageView
 
+    var currentIndex: Int = -1
+
     var o = 0
     var g = 0
     var b = 0
-
-    var currentIndex: Int = -1
 
 
     companion object {
@@ -217,6 +217,10 @@ class MapActivity : AppCompatActivity(){
             }
             Log.d("2:","second")
 
+            updateMap() //????????????????????????
+
+
+
             sourceVertex = destVertex
             val binVertex = findBin(graph, bins, sourceVertex)
             path = reconstructPath(prev, sourceVertex, binVertex)
@@ -282,6 +286,70 @@ class MapActivity : AppCompatActivity(){
         return(j*NUM_X_CELLS + i)
     }
 
+    private fun updateMap(){
+        greenImageView = findViewById(R.id.greenObj1)
+        greenImageView.setBackgroundResource(R.drawable.white)
+        greenImageView = findViewById(R.id.greenObj2)
+        greenImageView.setBackgroundResource(R.drawable.white)
+        greenImageView = findViewById(R.id.greenObj3)
+        greenImageView.setBackgroundResource(R.drawable.white)
+
+        blueImageView = findViewById(R.id.blueObj1)
+        blueImageView.setBackgroundResource(R.drawable.white)
+        blueImageView = findViewById(R.id.blueObj2)
+        blueImageView.setBackgroundResource(R.drawable.white)
+        blueImageView = findViewById(R.id.blueObj3)
+        blueImageView.setBackgroundResource(R.drawable.white)
+
+        var redMap = ControlActivity.mapRed
+        var greenMap = ControlActivity.mapGreen
+        var blueMap = ControlActivity.mapBlue
+        var imgWidth = ControlActivity.imgWidth
+
+        repopulate(redMap, greenMap, blueMap, imgWidth, tempGraph)
+    }
+
+    private fun repopulate(cornerMap: ArrayList<Int>, objGreen: ArrayList<Int>, objBlue: ArrayList<Int>, imgWidth: Int, tempGraph: Array<IntArray>){
+        val x1 = cornerMap[0].rem(imgWidth)
+        val y1 = cornerMap[0] / imgWidth
+        val x2 = cornerMap[1].rem(imgWidth)
+        val y2 = cornerMap[1] / imgWidth
+        val xP = minOf(x1, x2)
+        val yP = minOf(y1, y2)
+        val mapWidth = abs(x1 - x2)
+        val mapHeight = abs(y1 - y2)
+        g = 0
+        b = 0
+
+        if(!objGreen.isEmpty()){
+            for(i in objGreen){
+                val xGrn = i % imgWidth
+                val yGrn = i / imgWidth
+                val iIdx = (xGrn-xP).toFloat()/(mapWidth).toFloat() * 6
+                val jIdx = (yGrn - yP).toFloat()/(mapHeight).toFloat() * 4
+                Log.d("jIdx: ", jIdx.toString())
+                Log.d("iIdx: ", iIdx.toString())
+                if(tempGraph[floor(jIdx).roundToInt()][floor(iIdx).roundToInt()] == 3){
+                    drawGreenObj(floor(iIdx).roundToInt(), floor(jIdx).roundToInt())
+                }
+            }
+        }
+
+        if(!objBlue.isEmpty()){
+            for(i in objBlue){
+                val xBlu = i % imgWidth
+                val yBlu = i / imgWidth
+                val iIdx = (xBlu-xP).toFloat()/(mapWidth).toFloat() * 6
+                val jIdx = (yBlu - yP).toFloat()/(mapHeight).toFloat() * 4
+                Log.d("jIdx: ", jIdx.toString())
+                Log.d("iIdx: ", iIdx.toString())
+                if(tempGraph[floor(jIdx).roundToInt()][floor(iIdx).roundToInt()] == 2){
+                    drawBlueObj(floor(iIdx).roundToInt(), floor(jIdx).roundToInt())
+                }
+            }
+        }
+    }
+
     private fun populateMap(cornerMap: ArrayList<Int>, objGreen: ArrayList<Int>, objBlue: ArrayList<Int>, obstacles: ArrayList<Int>, imgWidth: Int){
         val x1 = cornerMap[0].rem(imgWidth)
         val y1 = cornerMap[0] / imgWidth
@@ -345,31 +413,6 @@ class MapActivity : AppCompatActivity(){
             }
         }
     }
-
-//    private fun isNotEmpty(arr: MutableList<Int>, len: Int): Boolean{
-//        for(i in 0..len) {
-//            if (arr[i] >= 0) {
-//                return (true)
-//            }
-//        }
-//        return(false)
-//    }
-
-//    private fun getMinIndex(arr: MutableList<Int>, len: Int): Int{
-//        var minIndex = 0
-//        Log.i("Dijk, arr",arr.toString())
-//        for(i in 0..len-1){
-//            if((arr[i] < arr[minIndex] && arr[i] >= 0)){
-//                Log.i("Dijk, minIndex",i.toString())
-//                minIndex = i
-//            }
-//        }
-//        if(arr[minIndex] == -1){
-//            return -1
-//        }
-//        return minIndex
-//
-//    }
 
     private fun getTravelCost(graph: Array<IntArray>, vertexSource: Int, vertexDest: Int): Int {
         val areNeighboring: Boolean
