@@ -34,6 +34,9 @@ import kotlin.math.abs
 import android.content.Context
 import android.support.constraint.ConstraintSet
 import org.jetbrains.anko.find
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 class MapActivity : AppCompatActivity(){
 
@@ -202,13 +205,17 @@ class MapActivity : AppCompatActivity(){
     }
 
     private fun populateMap(cornerMap: ArrayList<Int>, objGreen: ArrayList<Int>, objBlue: ArrayList<Int>, obstacles: ArrayList<Int>, imgWidth: Int){
-        val x1 = cornerMap[0] % imgWidth
+        val x1 = cornerMap[0].rem(imgWidth)
         val y1 = cornerMap[0] / imgWidth
-        val x2 = cornerMap[1] % imgWidth
+        val x2 = cornerMap[1].rem(imgWidth)
         val y2 = cornerMap[1] / imgWidth
 
         val xP = minOf(x1, x2)
         val yP = minOf(y1, y2)
+        Log.d("x1: ", x1.toString())
+        Log.d("y1:", y1.toString())
+        Log.d("x2:", x2.toString())
+        Log.d("y2:", y2.toString())
         Log.d("imgwidth: ", imgWidth.toString())
         Log.d("xp: ", xP.toString())
         Log.d("yp: ", yP.toString())
@@ -219,10 +226,12 @@ class MapActivity : AppCompatActivity(){
             for(i in objGreen){
                 val xGrn = i % imgWidth
                 val yGrn = i / imgWidth
-                val iIdx = (xGrn-xP)/(mapWidth) * NUM_X_CELLS
-                val jIdx = (yGrn - yP)/(mapHeight) * NUM_Y_CELLS
-                tempGraph[iIdx][jIdx] = 2
-                drawGreenObj(iIdx, jIdx)
+                val iIdx = (xGrn-xP).toFloat()/(mapWidth).toFloat() * 6
+                val jIdx = (yGrn - yP).toFloat()/(mapHeight).toFloat() * 4
+                Log.d("jIdx: ", jIdx.toString())
+                Log.d("iIdx: ", iIdx.toString())
+                tempGraph[floor(jIdx).roundToInt()][floor(iIdx).roundToInt()] = 3
+                drawGreenObj(floor(iIdx).roundToInt(), floor(jIdx).roundToInt())
             }
         }
 
@@ -230,10 +239,12 @@ class MapActivity : AppCompatActivity(){
             for(i in objBlue){
                 val xBlu = i % imgWidth
                 val yBlu = i / imgWidth
-                val iIdx = (xBlu-xP)/(mapWidth) * NUM_X_CELLS
-                val jIdx = (yBlu - yP)/(mapHeight) * NUM_Y_CELLS
-                tempGraph[iIdx][jIdx] = 2
-                drawBlueObj(iIdx, jIdx)
+                val iIdx = (xBlu-xP).toFloat()/(mapWidth).toFloat() * 6
+                val jIdx = (yBlu - yP).toFloat()/(mapHeight).toFloat() * 4
+                Log.d("jIdx: ", jIdx.toString())
+                Log.d("iIdx: ", iIdx.toString())
+                tempGraph[floor(jIdx).roundToInt()][floor(iIdx).roundToInt()] = 2
+                drawBlueObj(floor(iIdx).roundToInt(), floor(jIdx).roundToInt())
             }
         }
 
@@ -241,10 +252,12 @@ class MapActivity : AppCompatActivity(){
             for (i in obstacles) {
                 val xOb = i % imgWidth
                 val yOb = i / imgWidth
-                val iIdx = (xOb - xP) / (mapWidth) * NUM_X_CELLS
-                val jIdx = (yOb - yP) / (mapHeight) * NUM_Y_CELLS
-                tempGraph[iIdx][jIdx] = 1
-                drawObstacle(iIdx, jIdx)
+                val iIdx = (xOb-xP).toFloat()/(mapWidth).toFloat() * 6
+                val jIdx = (yOb - yP).toFloat()/(mapHeight).toFloat() * 4
+                Log.d("jIdx: ", jIdx.toString())
+                Log.d("iIdx: ", iIdx.toString())
+                tempGraph[floor(jIdx).roundToInt()][floor(iIdx).roundToInt()] = 1
+                drawObstacle(floor(iIdx).roundToInt(), floor(jIdx).roundToInt())
             }
         }
 
@@ -527,7 +540,6 @@ class MapActivity : AppCompatActivity(){
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        Log.d("iI: ", iI.toString())
 
         obstacleParams.horizontalBias = iI*0.199F
         obstacleParams.verticalBias = jI*0.335F
@@ -549,7 +561,6 @@ class MapActivity : AppCompatActivity(){
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        Log.d("iI: ", iI.toString())
 
         blueParams.horizontalBias = iI*0.199F
         blueParams.verticalBias = jI*0.335F
@@ -571,7 +582,6 @@ class MapActivity : AppCompatActivity(){
         val iI: Int = i as Int
         val jI: Int = j as Int
 
-        Log.d("iI: ", iI.toString())
 
         greenParams.horizontalBias = iI*0.199F
         greenParams.verticalBias = jI*0.335F
