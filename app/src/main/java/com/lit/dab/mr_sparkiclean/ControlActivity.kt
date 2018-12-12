@@ -191,9 +191,11 @@ class ControlActivity: AppCompatActivity(){
         val pixels = IntArray(image.height * image.width)
         image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
         mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
-        mapBlack = getBlobCoordsByColor(110, Color.parseColor("black"), image, "all")
-        mapBlue = getBlobCoordsByColor(130, Color.parseColor("blue"), image, "all")
-        mapGreen = getBlobCoordsByColor(135, Color.parseColor("green"), image, "all")
+        mapGreen = getBlobCoordsByColor(150, Color.parseColor("green"), image, "all")
+        mapBlack = getBlobCoordsByColor(50, Color.parseColor("black"), image, "all")
+        mapBlue = getBlobCoordsByColor(145, Color.parseColor("blue"), image, "all")
+
+
 
         for (r in mapRed) {
             Log.d("Red Index: ", r.toString())
@@ -213,6 +215,8 @@ class ControlActivity: AppCompatActivity(){
     private fun getBlobCoordsByColor(threshold: Int, color: Int, image: Bitmap, filterby: String): ArrayList<Int> {
         val width = image.width
         val height = image.height
+        Log.d("Image width: ", width.toString())
+        Log.d("Image height: ", height.toString())
         val pixels = IntArray(width * height)
         val filteredPixels = IntArray(width * height)
         image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
@@ -390,7 +394,7 @@ class ControlActivity: AppCompatActivity(){
 
             }
             val xpos = (maxX+minX)/2
-            val ypos = (maxX+minX)/2
+            val ypos = (maxY+minY)/2
             val idx = xpos + ypos*width
             blobIndices.add(idx)
             for (i in (minX + 1)..(maxX - 1)) {
