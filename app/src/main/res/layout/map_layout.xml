@@ -148,18 +148,6 @@
         app:layout_constraintTop_toTopOf="@+id/map_background"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-        android:id="@+id/sparki"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/ic_sparki_logo"
-        app:layout_constraintBottom_toBottomOf="@+id/map_background"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintLeft_toLeftOf="@+id/map_background"
-        app:layout_constraintRight_toRightOf="@+id/map_background"
-        app:layout_constraintTop_toTopOf="@+id/map_background"
-        app:layout_constraintVertical_bias="1.0" />
-
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -185,7 +173,7 @@
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="START!"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

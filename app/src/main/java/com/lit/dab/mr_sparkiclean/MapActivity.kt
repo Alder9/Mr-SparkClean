@@ -102,7 +102,7 @@ class MapActivity : AppCompatActivity(){
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        sparkiImageView = findViewById(R.id.sparki)
+        //sparkiImageView = findViewById(R.id.sparki)
         mTextView = findViewById(R.id.textCleaning)
         mButton = findViewById(R.id.startButton)
         if (isCleaning == "cleaning") {
@@ -225,13 +225,10 @@ class MapActivity : AppCompatActivity(){
                     val padding_y: String = "0".repeat(5 - y_string.length)
                     val stringToSend = xy.first.toString() + padding_x + xy.second.toString() + padding_y
                     sendCommand(stringToSend)
-                    delay(12000)
+                    delay(14000)
                 }
-                sendCommand("r")
-                delay(24000)
             }
-
-            Thread.sleep(12000*(pathlength+0.1).toLong()) // for however long we think sparki will need to move around the map
+            Thread.sleep(14000*(pathlength+0.2).toLong()) // for however long we think sparki will need to move around the map
 
             sourceVertex = destVertex
             val binVertex = findBin(graph, bins, sourceVertex)
@@ -270,12 +267,16 @@ class MapActivity : AppCompatActivity(){
                     val padding_y: String = "0".repeat(5 - y_string.length)
                     val stringToSend = xy.first.toString() + padding_x + xy.second.toString() + padding_y
                     sendCommand(stringToSend)
-                    delay(12000)
+                    delay(14000)
+                }
+                launch{
+                    sendCommand("r")
+                    delay(24000)
                 }
             }
 
             sourceVertex = binVertex
-            Thread.sleep(12000*(pathlength+0.1).toLong()) // for however long we think sparki will need to move around the map
+            Thread.sleep(24000 + 14000*(pathlength+0.2).toLong()) // for however long we think sparki will need to move around the map
         }
     }
 
@@ -678,7 +679,7 @@ class MapActivity : AppCompatActivity(){
                 Log.i("Coordinate", "Response2: " + result)
 
                 if(result == "97"){
-                    setSparkiMapPose(x,1-y)
+                    //setSparkiMapPose(x,1-y)
                     counter += 1
                 }
             }
@@ -717,15 +718,15 @@ class MapActivity : AppCompatActivity(){
     }
 
     // function to move sparki around the map
-    private fun setSparkiMapPose(xbias: Float, ybias: Float) {
-        Log.i("Coordinate", "test")
-        val sparkiParams = sparkiImageView.layoutParams as ConstraintLayout.LayoutParams
-        sparkiParams.horizontalBias = xbias
-        sparkiParams.verticalBias = ybias
-        sparkiImageView.layoutParams = sparkiParams
-
-        Log.i("Reponse", xbias.toString())
-    }
+//    private fun setSparkiMapPose(xbias: Float, ybias: Float) {
+//        Log.i("Coordinate", "test")
+//        val sparkiParams = sparkiImageView.layoutParams as ConstraintLayout.LayoutParams
+//        sparkiParams.horizontalBias = xbias
+//        sparkiParams.verticalBias = ybias
+//        sparkiImageView.layoutParams = sparkiParams
+//
+//        Log.i("Reponse", xbias.toString())
+//    }
 
     //function to draw an obstacle once we have found them
     private fun drawObstacle(i: Any, j: Any){
