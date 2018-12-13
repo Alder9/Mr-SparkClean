@@ -139,7 +139,6 @@ class MapActivity : AppCompatActivity(){
             for (x in 0..NUM_X_CELLS-1) {
                 if (graph[y][x] != 0 && graph[y][x] != 1) {
                     graph[y][x] = 0
-                    updateMap()
                     val idx = x + y * NUM_X_CELLS
                     return idx
                 }
@@ -192,13 +191,10 @@ class MapActivity : AppCompatActivity(){
         while(!isClean(graph)){
             // Dijkstras to get the object
             val destVertex = getNextObject(graph)
+            updateMap()
             Log.d("Source: ", sourceVertex.toString())
             Log.d("Dest: ", destVertex.toString())
-            for(j in 0..NUM_Y_CELLS-1){
-                for(i in 0..NUM_X_CELLS-1){
-                    Log.d("Graph", graph[j][i].toString())
-                }
-            }
+
             var prev = runDijkstras(graph, sourceVertex)
             var path = reconstructPath(prev, sourceVertex, destVertex)
             Log.d("path: ", path.toString())
@@ -217,34 +213,30 @@ class MapActivity : AppCompatActivity(){
                 }
             }
             Log.i("Dijk, path", xyPath.toString())
-
+            var pathlength = xyPath.size
             // Sending to get to sparki to object
             launch {
                 for(xy in xyPath){
-                    launch {
-                        while(busy){
-                            delay(2000)
-                        }
-                        busy = true
-                        Log.i("Pair", xy.toString())
-                        val job = async { sendCoordinateAndUpdateSparki(xy.first, xy.second) }
-                        job.await()
-                    }
+                    var resp = ""
+                    val x_string = xy.first.toString()
+                    val y_string = xy.second.toString()
+                    Log.d("xy: ", xy.toString())
+                    val padding_x: String = "0".repeat(5 - x_string.length)
+                    val padding_y: String = "0".repeat(5 - y_string.length)
+                    val stringToSend = xy.first.toString() + padding_x + xy.second.toString() + padding_y
+                    sendCommand(stringToSend)
+                    delay(12000)
                 }
             }
 
-            Thread.sleep(15000) // for however long we think sparki will need to move around the map
+            Thread.sleep(12000*(pathlength+0.1).toLong()) // for however long we think sparki will need to move around the map
 
             sourceVertex = destVertex
             val binVertex = findBin(graph, bins, sourceVertex)
             Log.d("Picked up object, ","Going to bin")
             Log.d("Source: ", sourceVertex.toString())
             Log.d("Bin: ", binVertex.toString())
-            for(j in 0..NUM_Y_CELLS-1){
-                for(i in 0..NUM_X_CELLS-1){
-                    Log.d("Graph", graph[j][i].toString())
-                }
-            }
+
             prev = runDijkstras(graph, sourceVertex)
             path = reconstructPath(prev, sourceVertex, binVertex)
             Log.d("path: ", path.toString())
@@ -263,25 +255,25 @@ class MapActivity : AppCompatActivity(){
                 }
             }
             Log.i("Dijk, path", xyPath2.toString())
+            pathlength = xyPath2.size
 
             // Send to get to bin
             launch {
                 for(xy in xyPath2){
-                    launch {
-                        while(busy){
-                            delay(2000)
-                        }
-                        busy = true
-                        Log.i("Pair", xy.toString())
-                        val job = async { sendCoordinateAndUpdateSparki(xy.first, xy.second) }
-                        job.await()
-                    }
+                    var resp = ""
+                    val x_string = xy.first.toString()
+                    val y_string = xy.second.toString()
+                    Log.d("xy: ", xy.toString())
+                    val padding_x: String = "0".repeat(5 - x_string.length)
+                    val padding_y: String = "0".repeat(5 - y_string.length)
+                    val stringToSend = xy.first.toString() + padding_x + xy.second.toString() + padding_y
+                    sendCommand(stringToSend)
+                    delay(12000)
                 }
             }
 
             sourceVertex = binVertex
-
-            Thread.sleep(10000) // wait however long sparki needs to get to the bins
+            Thread.sleep(12000*(pathlength+0.1).toLong()) // for however long we think sparki will need to move around the map
         }
     }
 
@@ -432,45 +424,6 @@ class MapActivity : AppCompatActivity(){
         }
     }
 
-//    private fun getTravelCost(graph: Array<IntArray>, vertexSource: Int, vertexDest: Int): Int {
-//        val areNeighboring: Boolean
-//        val s : List<Any> = vertex_index_to_ij_coordinates(vertexSource)
-//        val d : List<Any> = vertex_index_to_ij_coordinates(vertexDest)
-//
-//        val sOk: Boolean? = s.first() as? Boolean
-//        val dOk: Boolean? = d.first() as? Boolean
-//
-//        if(!sOk!!){
-//            return(255)
-//        }
-//        if(!dOk!!) {
-//            return (255)
-//        }
-//
-//        val sI: Int? = s.get(1) as? Int
-//        val dI: Int? = d.get(1) as? Int
-//
-//        val sJ: Int? = s.get(2) as? Int
-//        val dJ: Int? = d.get(2) as? Int
-//
-//        //Log.i("Dijk, si/j", Pair(sI,sJ).toString())
-//        //Log.i("Dijk, di/j", Pair(dI,dJ).toString())
-//
-//        areNeighboring = (abs(sI!!-dI!!) + abs(sJ!!-dJ!!) <= 1)
-//
-//        //Log.i("Dijk, neigh", areNeighboring.toString())
-//        //Log.i("Dijk, ret", graph[dJ][dI].toString())
-//
-//        if(graph[dJ][dI] == 1){
-//            return 255
-//        }
-//        if(areNeighboring){
-//            return 1
-//        }
-//        else{
-//            return 255
-//        }
-//    }
 
     private fun getTravelCost(graph: Array<IntArray>, vertexSource: Int, vertex_dest: Int): Int {
         val s : List<Any> = vertex_index_to_ij_coordinates(vertexSource)
@@ -493,7 +446,7 @@ class MapActivity : AppCompatActivity(){
         val dj: Int? = d.get(2) as? Int
 
         if(vertex_dest < 0 || vertex_dest >= NUM_X_CELLS * NUM_Y_CELLS || vertex_dest < 0 || vertex_dest >= NUM_X_CELLS * NUM_Y_CELLS || graph[dj!!][di!!] == 1) {
-            return 255;
+            return 255
         }
         //Check neighbors
         if(abs(si!! - di!!) == 0 && abs(sj!! - dj!!) == 1 || abs(si!! - di!!) == 1 && abs(sj!! - dj!!) == 0) {
@@ -503,7 +456,7 @@ class MapActivity : AppCompatActivity(){
         }
     }
 
-    private fun runDijkstras(graph: Array<IntArray>, sourceVertex: Int): MutableList<Int>{
+   /* private fun runDijkstras(graph: Array<IntArray>, sourceVertex: Int): MutableList<Int>{
         val q_cost: Queue<Int> = ArrayDeque<Int>()
         val dist: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
         val prev: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
@@ -549,7 +502,98 @@ class MapActivity : AppCompatActivity(){
         }
         Log.i("Dijk, dist",dist.toString())
         return(prev)
+    }*/
+
+    private fun is_empty(arr: MutableList<Int>, len: Int): Boolean {
+        for (i in 0..len-1){
+            if (arr[i] >= 0) {
+                return false
+            }
+        }
+        return true
     }
+
+    private fun get_min_index(arr: MutableList<Int>, len: Int): Int {
+        var min_val=-1
+        var min_idx=-1
+        for (i in 0..len-1){
+            if ((arr[i] < min_val && arr[i] != -1) || (arr[i] > min_val && min_val == -1)) {
+                min_val = arr[i]
+                min_idx = i
+            }
+        }
+        return min_idx
+    }
+
+    private fun runDijkstras(graph: Array<IntArray>, source_vertex: Int): MutableList<Int> {
+        val length = NUM_Y_CELLS*NUM_X_CELLS;
+        val dist: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
+        val prev: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
+        val Q_cost: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
+
+        for (i in 0..length-1) {
+            Q_cost[i] = 255
+            prev[i] = -1
+            dist[i] = 255
+        }
+
+        Q_cost[source_vertex] = 0
+        dist[source_vertex] = 0
+
+        while(!is_empty(Q_cost, length)) {
+            //Get min index
+            var u = get_min_index(Q_cost, length);
+            //"Delete" U from Q_cost
+            Q_cost[u] = -1
+
+            //For each neighbor V of U...
+
+            val up: List<Any> = vertex_index_to_ij_coordinates(source_vertex)
+            val ui: Int? = up.get(1) as? Int
+            val uj: Int? = up.get(2) as? Int
+
+            var v: Int
+            var altCost = 0
+            v = u - 1
+            altCost = dist[u] + getTravelCost(graph, u, v)
+            if (v > 0 && v < dist.size && altCost < dist[v]) {
+                dist[v] = altCost;
+                prev[v] = u;
+                if(Q_cost[v] != -1) {
+                    Q_cost[v] = altCost;
+                }
+            }
+            v = u + 1;
+            altCost = dist[u] + getTravelCost(graph, u, v)
+            if (v > 0 && v < dist.size && altCost < dist[v]) {
+                dist[v] = altCost;
+                prev[v] = u;
+                if(Q_cost[v] != -1) {
+                    Q_cost[v] = altCost;
+                }
+            }
+            v = u - NUM_X_CELLS;
+            altCost = dist[u] + getTravelCost(graph, u, v)
+            if (v > 0 && v < dist.size && altCost < dist[v]) {
+                dist[v] = altCost;
+                prev[v] = u;
+                if(Q_cost[v] != -1) {
+                    Q_cost[v] = altCost;
+                }
+            }
+            v = u + NUM_X_CELLS;
+            altCost = dist[u] + getTravelCost(graph, u, v)
+            if (v > 0 &&  v < dist.size && altCost < dist[v]) {
+                dist[v] = altCost;
+                prev[v] = u;
+                if(Q_cost[v] != -1) {
+                    Q_cost[v] = altCost;
+                }
+            }
+        }
+        return prev;
+    }
+
 
     private fun reconstructPath(prev: MutableList<Int>, sourceVertex: Int, destVertex: Int): MutableList<Int>{
         var path: MutableList<Int> = MutableList(NUM_Y_CELLS*NUM_X_CELLS) {0}
