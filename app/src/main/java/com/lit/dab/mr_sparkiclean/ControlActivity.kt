@@ -192,8 +192,8 @@ class ControlActivity: AppCompatActivity(){
         image.getPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
         mapRed = getBlobCoordsByColor(110, Color.parseColor("red"), image, "all")
         mapGreen = getBlobCoordsByColor(150, Color.parseColor("green"), image, "all")
+        mapBlue = getBlobCoordsByColor(150, Color.parseColor("blue"), image, "all")
         mapBlack = getBlobCoordsByColor(55, Color.parseColor("black"), image, "all")
-        mapBlue = getBlobCoordsByColor(155, Color.parseColor("blue"), image, "all")
 
 
 

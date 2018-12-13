@@ -227,6 +227,8 @@ class MapActivity : AppCompatActivity(){
                     sendCommand(stringToSend)
                     delay(12000)
                 }
+                sendCommand("r")
+                delay(24000)
             }
 
             Thread.sleep(12000*(pathlength+0.1).toLong()) // for however long we think sparki will need to move around the map
